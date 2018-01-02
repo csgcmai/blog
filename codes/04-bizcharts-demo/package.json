@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@antv/data-set": "^0.8.3",
     "bizcharts": "^3.1.0-beta.6",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
