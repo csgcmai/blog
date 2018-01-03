@@ -3,7 +3,7 @@ import { Chart, Axis, Legend, Tooltip, Geom } from 'bizcharts'
 import MultipleLine from './Page/MultipleLine'
 import StackedColumn from './Page/StackedColumn'
 import StackedArea from './Page/StackedArea'
-import stackedAreaData from './data/stackedAreaData'
+import BasicPie from './Page/BasicPie'
 
 class App extends Component {
   render() {
@@ -17,6 +17,9 @@ class App extends Component {
 
         {/* 堆栈面积图 */}
         <StackedArea />
+
+        {/* 基础饼图 */}
+        <BasicPie />
       </div>
     );
   }
