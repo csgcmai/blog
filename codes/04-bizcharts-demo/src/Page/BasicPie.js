@@ -1,16 +1,15 @@
 /**
  * @File: 基础饼图
- * @TODO: 暴露 Geom tooltip 配置
  */
 
 import React, { Component } from 'react';
 import { Chart, Coord, Axis, Legend, Tooltip, Geom, Label } from 'bizcharts'
 import { View } from '@antv/data-set';
-import BasicPieData from '../data/BasicPieData'
+import basicPieData from '../data/basicPieData'
 
 class StackedColumn extends Component {
   render() {
-    let dv = new View().source(BasicPieData)
+    let dv = new View().source(basicPieData)
 
     {
       /*
@@ -43,10 +42,11 @@ class StackedColumn extends Component {
           {/* 设置半径固定的极坐标系，常用于饼图：https://antv.alipay.com/zh-cn/g2/3.x/api/chart.html#_coord */}
           <Coord type='theta' radius={0.75} />
           <Axis name="percent" />
-          <Legend position='right' />
+          <Legend />
 
           {/* 设置 tooltip 每项记录的默认模板：https://antv.alipay.com/zh-cn/g2/3.x/api/chart.html#_tooltip */}
           <Tooltip showTitle={false} itemTpl='<li><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>' />
+
           <Geom
             type='intervalStack'
             position='percent'

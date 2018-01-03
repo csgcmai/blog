@@ -1,4 +1,4 @@
-const StackedColumnData = [
+const stackedColumnData = [
   { 'State': 'WY', '小于5岁': 25635, '5至13岁': 1890, '14至17岁': 9314 },
   { 'State': 'DC', '小于5岁': 30352, '5至13岁': 20439, '14至17岁': 10225 },
   { 'State': 'VT', '小于5岁': 38253, '5至13岁': 42538, '14至17岁': 15757 },
@@ -6,4 +6,4 @@ const StackedColumnData = [
   { 'State': 'AK', '小于5岁': 72083, '5至13岁': 85640, '14至17岁': 22153 }
 ];
 
-export default StackedColumnData;
+export default stackedColumnData;

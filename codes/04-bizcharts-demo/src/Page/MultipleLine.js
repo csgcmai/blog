@@ -5,11 +5,11 @@
 import React, { Component } from 'react';
 import { Chart, Axis, Tooltip, Geom } from 'bizcharts'
 import { View } from '@antv/data-set';
-import MultipleLineData from '../data/MultipleLineData'
+import multipleLineData from '../data/multipleLineData'
 
 class MultipleLine extends Component {
  render() {
-   let dv = new View().source(MultipleLineData);
+   let dv = new View().source(multipleLineData);
 
    dv.transform({
      type: 'fold',

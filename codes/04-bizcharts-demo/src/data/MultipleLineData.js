@@ -1,4 +1,4 @@
-const MultipleLineData = [
+const multipleLineData = [
   { month: 'Jan', Tokyo: 7.0, London: 3.9 },
   { month: 'Feb', Tokyo: 6.9, London: 4.2 },
   { month: 'Mar', Tokyo: 9.5, London: 5.7 },
@@ -13,4 +13,4 @@ const MultipleLineData = [
   { month: 'Dec', Tokyo: 9.6, London: 4.8 }
 ]
 
-export default MultipleLineData
+export default multipleLineData

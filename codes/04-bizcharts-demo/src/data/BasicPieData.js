@@ -1,4 +1,4 @@
-const BasicPieData = [
+const basicPieData = [
   { item: '事例一', count: 40 },
   { item: '事例二', count: 21 },
   { item: '事例三', count: 17 },
@@ -6,4 +6,4 @@ const BasicPieData = [
   { item: '事例五', count: 9 }
 ];
 
-export default BasicPieData;
+export default basicPieData;

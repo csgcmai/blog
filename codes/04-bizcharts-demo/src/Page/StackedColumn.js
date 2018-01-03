@@ -5,11 +5,11 @@
 import React, { Component } from 'react';
 import { Chart, Coord, Axis, Tooltip, Geom } from 'bizcharts'
 import { View } from '@antv/data-set';
-import StackedColumnData from '../data/StackedColumnData'
+import stackedColumnData from '../data/stackedColumnData'
 
 class StackedColumn extends Component {
   render() {
-    let dv = new View().source(StackedColumnData)
+    let dv = new View().source(stackedColumnData)
 
     dv.transform({
       type: 'fold',
