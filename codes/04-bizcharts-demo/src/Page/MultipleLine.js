@@ -29,6 +29,7 @@ class MultipleLine extends Component {
        <Chart
          data={dv}
          scale={cols}
+         height={400}
          forceFit
        >
          <Axis name="month" />

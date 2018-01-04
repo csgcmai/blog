@@ -27,7 +27,7 @@ class StackedColumn extends Component {
     const cols = {
       percent: {
         formatter: (val) => {
-          return (val * 100) + '%';
+          return `${val * 100}%`;
         }
       }
     }
@@ -37,6 +37,7 @@ class StackedColumn extends Component {
         <Chart
           data={dv}
           scale={cols}
+          height={400}
           forceFit
         >
           {/* 设置半径固定的极坐标系，常用于饼图：https://antv.alipay.com/zh-cn/g2/3.x/api/chart.html#_coord */}

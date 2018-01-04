@@ -20,6 +20,7 @@ class StackedArea extends Component {
         <Chart
           data={stackedAreaData}
           scale={cols}
+          height={400}
           forceFit
         >
           <Axis name="year" />

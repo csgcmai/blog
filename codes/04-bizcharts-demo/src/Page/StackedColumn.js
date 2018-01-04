@@ -23,6 +23,7 @@ class StackedColumn extends Component {
       <div>
         <Chart
           data={dv}
+          height={400}
           forceFit
         >
           {/* 转置坐标系的 x轴、y轴：https://antv.alipay.com/zh-cn/g2/3.x/api/chart.html#_coord */}
