@@ -6,10 +6,14 @@
 #### AntV 与 G2
 
 * AntV 是蚂蚁金服体验技术部团队提供的一套[数据可视化](https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/1252367?fr=aladdin)方案。[AntV team](https://github.com/antvis)
-* AntV 中主要包含 [G2](https://antv.alipay.com/zh-cn/g2/3.x/index.html)、G6(https://antv.alipay.com/zh-cn/g6/1.x/index.html)、[F2](https://antv.alipay.com/zh-cn/f2/3.x/index.html)
-  * G2：可视化图形语法。
-  * G6：关系图类库，用以解决流程和关系分析场景
-  * F2：移动端图表库（a canvas library which providing 2d draw for mobile）
+* AntV 中主要包含 [G2](https://antv.alipay.com/zh-cn/g2/3.x/index.html)、[G6](https://antv.alipay.com/zh-cn/g6/1.x/index.html)、[F2](https://antv.alipay.com/zh-cn/f2/3.x/index.html) 及一套完整的**图表使用指引**和**可视化设计规范**
+  * G2：数据驱动的高交互可视化**图形语法**，是图形语法在前端工程上的一个实现。G2 3.0 于 2017-11-22 正式开源，包括3个核心包 底层 Canvas 绘图库 [g](https://github.com/antvis/g)、数据处理库 [data-set](https://github.com/antvis/data-set)和上层的数据驱动交互式图形语法库 [g2](https://github.com/antvis/g2)。
+  * G6：专注解决流程与关系分析场景的图表库
+  * F2：适于对**性能、体积、扩展性**要求严苛场景下使用的**移动端图表库**（a canvas library which providing 2d draw for mobile）
+
+1024 条数据的情况下折线图的性能对比：
+
+![1024 条数据的情况下折线图的性能对比](../../media/04/performance.jpg)
 
 #### 可视化图形语法
 
@@ -19,7 +23,7 @@ Leland Wilkinson 在上世纪90年代开发可视化软件时编写了[《The Gr
 
 图形语法的组成：https://antv.alipay.com/zh-cn/g2/3.x/tutorial/the-grammar-of-graphics.html#_图形语法的组成
 
-和传统枚举图表类型的可视化工具相比，基于图形语法的可视化工具的特征是：生成每一个图形的过程就是组合不同的基础图形语法的过程。图形语法的灵活和强大之处就在于，我们只需要改动其中某一步的处理过程，就能得到完全不同的、全新的图表。
+和传统 **枚举图表类型** 的可视化工具相比，基于图形语法的可视化工具的特征是：生成每一个图形的过程就是组合不同的基础图形语法的过程。图形语法的灵活和强大之处就在于，我们只需要改动其中某一步的处理过程，就能得到完全不同的、全新的图表。
 
 > 参考 [可视化图形语法概述](https://zhuanlan.zhihu.com/p/32178892?group_id=926791155145109504)
 
@@ -29,6 +33,10 @@ Anv 官推的基于 G2 的 React 图表库
 
 ## G2 中的几个重要基础概念
 
+#### G2 图表组成
+
+![compose](../../media/04/compose.png)
+
 #### 几何标记 Geom
 
 G2 中并没有特定的图表类型（柱状图、散点图、折线图等）的概念，G2 生成的图表类型，主要由几何标记决定。几何标记用来描述 点、线、面这些几何图形。
@@ -37,7 +45,7 @@ G2 中并没有特定的图表类型（柱状图、散点图、折线图等）�
 
 业务中最常用的几何标记类型：
 
-Geom 类型 | 图表类型 | 描述
+Geom | 图表类型 | 描述
 -------- | --------| ----------
 `point` | **点图、折线图中的点** | 点，用于绘制各种点图。
 `line` | **折线图、曲线图**、阶梯线图 | 线，点按照 x 轴连接成一条线，构成线图。
@@ -66,10 +74,51 @@ chart.point().position('a*b').color('c');
 
 > [G2 图形属性使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/attr.html)
 
-## 一些业务功能亮点
+## AntV 功能亮点
 
-#### 多Y轴图表的支持
+#### 支持多种数据源的解析
+
+独立的数据处理模块（DateSet）支持多种数据源的解析，可以将 [csv](https://zh.wikipedia.org/wiki/%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94%E5%80%BC)、dsv、GeoJSON 转换成标准 JSON
+
+[Connector 数据接入](https://antv.alipay.com/zh-cn/g2/3.x/api/connector.html)
+
+#### 多Y轴图表的良好支持
 
 ![多Y轴图表](../../media/04/multi-y.png)
 
 [如何绘制多 y 轴图表](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/fqas.html#_如何绘制多-y-轴图表)
+
+#### 事件完备，无限交互可能
+
+AntV 3.0 版本中，图表上的 **任意元素** 均可捕获鼠标和触摸事件，提供了更精准的事件监听！
+
+只需要在 chart 或者 view 上监听该元素对应的事件名即可（元素名+基础事件名的方式组合），Eg：
+
+```js
+// 监听坐标轴文本的鼠标事件
+chart.on('axis-label:mouseenter', ev => {});
+chart.on('axis-label:mouseleave', ev => {});
+chart.on('axis-label:click', ev => {});
+```
+
+#### 自定义动画
+
+AntV 3.0 动画模块也从底层做了深入的优化，支持自定义动画，也更加流畅。
+
+![自定义动画](../../media/04/custom-animation.gif)
+
+#### 支持分面（Facet）图表
+
+分面，将一份数据按照某个维度分隔成若干子集，然后创建一个图表的矩阵，将每一个数据子集绘制到图形矩阵的窗格中。
+
+![facet](../../media/04/facet.png)
+
+#### 支持图片导出
+
+直接调用 `chart.downloadImage();` 即可导出图片。
+
+[如何导出图片](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/fqas.html#_%E5%A6%82%E4%BD%95%E5%AF%BC%E5%87%BA%E5%9B%BE%E7%89%87)
+
+## 辅助阅读
+
+* [AntV 3.0 — 三生万物](https://zhuanlan.zhihu.com/p/31452637)
