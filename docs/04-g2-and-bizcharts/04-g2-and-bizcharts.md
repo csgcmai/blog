@@ -149,6 +149,41 @@ chart.point().position('a*b').color('c');
 
 > [G2 图形属性使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/attr.html)
 
+#### 坐标系 Coord
+
+G2 包含了两种类型坐标系（polar、theta、helix 均属于极坐标），目前所有的坐标系均是 2 维的。
+
+coordType | 说明
+--------- | ----
+`rect` | 直角坐标系，目前仅支持二维，由 x, y 两个互相垂直的坐标轴构成。
+`polar` | 极坐标系，由角度和半径 2 个维度构成。
+`theta` | 一种特殊的极坐标系，半径长度固定，仅仅将数据映射到角度，常用于饼图的绘制。
+`helix` | 螺旋坐标系，基于阿基米德螺旋线。
+
+坐标系类型的变换会改变几何标记的形状：在极坐标系中，矩形将变为圆环的一部分，而地图中两点间的最短路径也将不是直线。
+
+例如下图展示的层叠柱状图，在不同坐标系下就变换成了其他的图表类型：
+
+![coord](../../media/04/coord.png)
+
+上图左侧为层叠柱状图，中间的饼图则是层叠柱状图在极坐标下对 x y 两个坐标轴进行转置后的结果，其中 x 轴被映射为半径，y 轴被映射成了角度。而最右边的牛眼图则相反，y 轴映射为半径。
+
+```js
+// 设置坐标系
+chart.coord('coordType'[, cfg]);
+```
+
+G2 提供的坐标系支持一系列的变换操作：旋转（rotate）、缩放（scale）、X、Y轴交换（transpose）、镜像（reflect）
+
+![coord-scale](../../media/04/coord-scale.gif)
+
+```js
+// 坐标系变换
+chart.coord().rotate(90).scale(1.3, 5).reflect('x').transpose();
+```
+
+[坐标系介绍](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/coord.html)
+
 ## AntV 功能亮点
 
 #### 支持多种数据源的解析
