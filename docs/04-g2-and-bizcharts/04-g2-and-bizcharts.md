@@ -184,6 +184,21 @@ chart.coord().rotate(90).scale(1.3, 5).reflect('x').transpose();
 
 [坐标系介绍](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/coord.html)
 
+#### 图表事件
+
+chart 对象提供了各种事件支持，G2 中，我们将事件分为如下事件：
+
+1. 画布基础事件，如 mousedown、click、dblclick 等；`chart.on('mousedown', ev => {});`
+2. 绘图区域事件，如 plotmove、plotclick 等；`chart.on('plotenter', ev => {});`
+3. tooltip 事件；`chart.on('tooltip:show', ev => {}); // tooltip 展示`
+4. 图形元素事件，以 『图形元素名』+ 『基础事件名』 的方式来组合图形元素上的事件。`chart.on('axis-label:click', ev => {});`
+
+![chart-event](../../media/04/chart-event.png)
+
+Eg. [饼图点击跳转](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/chart-event.html#_%E7%A4%BA%E4%BE%8B-1%EF%BC%9A%E9%A5%BC%E5%9B%BE%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC)
+
+[图表事件-使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/chart-event.html#_%E5%9B%BE%E8%A1%A8%E4%BA%8B%E4%BB%B6)
+
 ## AntV 功能亮点
 
 #### 支持多种数据源的解析
