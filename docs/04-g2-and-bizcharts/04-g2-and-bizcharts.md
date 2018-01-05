@@ -109,8 +109,11 @@ chart.source(dv);
 ds.setState('year', '2012');
 ```
 
-* [图表联动示例](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/data-set.html#_%E5%9B%BE%E8%A1%A8%E8%81%94%E5%8A%A8%E7%A4%BA%E4%BE%8B)
-* [DateSet 使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/data-set.html)
+[图表联动示例](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/data-set.html#_%E5%9B%BE%E8%A1%A8%E8%81%94%E5%8A%A8%E7%A4%BA%E4%BE%8B)
+
+![dataSet](../../media/04/dataSet.svg)
+
+[DateSet 使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/data-set.html)
 
 #### 几何标记 Geom
 
@@ -199,7 +202,92 @@ Eg. [饼图点击跳转](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/chart-eve
 
 [图表事件-使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/chart-event.html#_%E5%9B%BE%E8%A1%A8%E4%BA%8B%E4%BB%B6)
 
-## AntV 功能亮点
+## 思考，G2 与 传统可枚举图表解决方案的区别？
+
+```js
+const { DataView } = DataSet;
+const data = [
+  { item: '事例一', count: 40 },
+  { item: '事例二', count: 21 },
+  { item: '事例三', count: 17 },
+  { item: '事例四', count: 13 },
+  { item: '事例五', count: 9 }
+];
+
+// 创建视图对象
+const dv = new DataView();
+
+// 进行百分比统计
+dv.source(data).transform({
+  type: 'percent',
+  field: 'count',
+  dimension: 'item',
+  as: 'percent'
+});
+
+// 创建图表，绑定 DOM 容器
+const chart = new G2.Chart({
+  container: 'mountNode',
+  forceFit: true,
+  height: window.innerHeight,
+});
+
+// 为 chart 装载数据
+chart.source(dv, {
+  percent: { // 用于数据字段的列定义，如设置数据的类型，显示别名，时间类型的展示格式等，不同的数据类型的配置项不同
+    formatter: val => {
+      return (val * 100) + '%';
+    }
+  }
+});
+
+// 坐标系设置
+chart.coord('theta', {
+  radius: 0.75
+});
+
+// tooltip 设置
+chart.tooltip({
+  showTitle: false,
+  itemTpl: '<li><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>'
+});
+
+// Geom 几何标记、视觉通道 映射
+chart.intervalStack()
+  .position('percent')
+  .color('item')
+  .label('percent', {
+    formatter: (val, item) => {
+      return item.point.item + ': ' + val;
+    }
+  })
+  .tooltip('item*percent', (item, percent) => {
+    return {
+      name: item,
+      value: (percent * 100) + '%'
+    };
+  })
+  .style({
+    lineWidth: 1,
+    stroke: '#fff'
+  });
+
+// 将图表渲染至画布
+chart.render();
+```
+
+[G2 实现基础饼图 Demo](https://github.com/AnHongpeng/blog/blob/master/codes/04-bizcharts-demo/g2-demo/g2-basic-pie.html)
+
+[BizCharts 实现基础饼图 Demo](https://github.com/AnHongpeng/blog/blob/master/codes/04-bizcharts-demo/src/Page/BasicPie.js)
+
+[Echarts 实现基础饼图 Demo](http://echarts.baidu.com/demo.html#pie-simple)
+
+* 枚举方式为了满足图表高度定制化需求，需要暴露很多配置项（定制化的维度越多，越是需要配置项，而且还不能将场景穷尽），增加了记忆成本、理解成本，从而增加了使用成本。
+* 图形语法 通过 组合不同的基础图形语法，满足极致的定制化需求（实现更加细粒度）
+* 枚举方式的开发模式，通过 **整合数据，得到一个配置项**，用于渲染。相比于 图形语法的流程，不利于调试。图形语法的优势在于，可枚举的配置项被分散在各个流程中，同样，数据调试可以在每个流程中进行。
+* G2 DateSet、DateView 通过统一的数据集管理去实现多视图状态同步的能力，是典型的将数据处理与视图渲染分离的优势，而这是枚举型方案不具备的（或者说是不便于实现的）。
+
+## AntV 其他功能亮点
 
 #### 支持多种数据源的解析
 
