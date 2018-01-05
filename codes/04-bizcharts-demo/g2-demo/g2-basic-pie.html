@@ -20,33 +20,46 @@
     { item: '事例四', count: 13 },
     { item: '事例五', count: 9 }
   ];
+
+  // 创建视图对象
   const dv = new DataView();
+
+  // 进行百分比统计
   dv.source(data).transform({
     type: 'percent',
     field: 'count',
     dimension: 'item',
     as: 'percent'
   });
+
+  // 创建图表，绑定 DOM 容器
   const chart = new G2.Chart({
     container: 'mountNode',
     forceFit: true,
     height: window.innerHeight,
   });
+
+  // 为 chart 装载数据
   chart.source(dv, {
-    percent: {
+    percent: { // 用于数据字段的列定义，如设置数据的类型，显示别名，时间类型的展示格式等，不同的数据类型的配置项不同
       formatter: val => {
-        val = (val * 100) + '%';
-        return val;
+        return (val * 100) + '%';
       }
     }
   });
+
+  // 坐标系设置
   chart.coord('theta', {
     radius: 0.75
   });
+
+  // tooltip 设置
   chart.tooltip({
     showTitle: false,
     itemTpl: '<li><span style="background-color:{color};" class="g2-tooltip-marker"></span>{name}: {value}</li>'
   });
+
+  // Geom 几何标记、视觉通道 映射
   chart.intervalStack()
     .position('percent')
     .color('item')
@@ -56,16 +69,17 @@
       }
     })
     .tooltip('item*percent', (item, percent) => {
-      percent = percent * 100 + '%';
       return {
         name: item,
-        value: percent
+        value: (percent * 100) + '%'
       };
     })
     .style({
       lineWidth: 1,
       stroke: '#fff'
     });
+
+  // 将图表渲染至画布
   chart.render();
 </script>
 </body>
