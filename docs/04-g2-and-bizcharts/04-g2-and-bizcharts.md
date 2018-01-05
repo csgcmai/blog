@@ -7,11 +7,11 @@
 
 * AntV 是蚂蚁金服体验技术部团队提供的一套[数据可视化](https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/1252367?fr=aladdin)方案。[AntV team](https://github.com/antvis)
 * AntV 中主要包含 [G2](https://antv.alipay.com/zh-cn/g2/3.x/index.html)、[G6](https://antv.alipay.com/zh-cn/g6/1.x/index.html)、[F2](https://antv.alipay.com/zh-cn/f2/3.x/index.html) 及一套完整的**图表使用指引**和**可视化设计规范**
-  * G2：数据驱动的高交互可视化**图形语法**，是图形语法在前端工程上的一个实现。G2 3.0 于 2017-11-22 正式开源，包括3个核心包 底层 Canvas 绘图库 [g](https://github.com/antvis/g)、数据处理库 [data-set](https://github.com/antvis/data-set)和上层的数据驱动交互式图形语法库 [g2](https://github.com/antvis/g2)。
+  * G2：数据驱动的高交互可视化**图形语法**，是图形语法在前端工程上的一个实现。G2 3.0 于 2017-11-22 正式开源（MIT），包括3个核心包 底层 Canvas 绘图库 [g](https://github.com/antvis/g)、数据处理库 [data-set](https://github.com/antvis/data-set)和上层的数据驱动交互式图形语法库 [g2](https://github.com/antvis/g2)。
   * G6：专注解决流程与关系分析场景的图表库
   * F2：适于对**性能、体积、扩展性**要求严苛场景下使用的**移动端图表库**（a canvas library which providing 2d draw for mobile）
 
-1024 条数据的情况下折线图的性能对比：
+1024 条数据的情况下折线图的性能对比（3.0 做了 Canvas 图层合并、数据处理 DateSet 模块外置，将数据处理与图表绘制解耦）：
 
 ![1024 条数据的情况下折线图的性能对比](../../media/04/performance.jpg)
 
@@ -29,13 +29,88 @@ Leland Wilkinson 在上世纪90年代开发可视化软件时编写了[《The Gr
 
 #### BizCharts
 
-Anv 官推的基于 G2 的 React 图表库
+Anv 官推的基于 G2 的 React 图表库。
+
+此外，[Viser](https://viserjs.github.io/) 对 G2 3.0 做了通用的抽象，已经支持对 React、Angular、Vue 三个框架的深度整合，对应的是 viser-react、viser-ng 和 viser-vue。
 
 ## G2 中的几个重要基础概念
 
 #### G2 图表组成
 
 ![compose](../../media/04/compose.png)
+
+#### DateSet
+
+自 G2 3.0 版本开始，原先内置的数据处理模块 frame 从 G2 包中抽离出来，独立成为 DataSet 包。DataSet 的目标是为数据可视化场景提供 **状态驱动（state driven）** 的、丰富而强大的数据处理能力。
+
+旧版本中，数据处理模块是和 G2 强耦合的，统计处理甚至会入侵到图形语法中。这会带来几方面的问题：
+
+1. 功能受限于耦合，比较难升级
+2. 数据处理是非常大的领域，内置的话扩展起来难免畏首畏尾，担心因此影响 G2 的体量
+3. 耦合的情况下，给数据处理和图形语法两方面都带来了新的 **理解成本**。
+
+> 基于这些考虑，AntV 团队认真梳理了底层架构，决定从 G2 中把数据处理部分抽离出来，封装成了一个专门的数据处理模块 DataSet。从此 **G2 内部不再有数据处理、布局和统计方面的代码包袱**，继续专注强化“高交互图形语法”方面的特长；而独立的 DataSet 模块则通过简单、强包容性的架构，以及 **状态量等策略** 扫除了升级扩展的障碍，得以从开源社区大量借力，不断丰富 **“数据驱动”** 这一特性的内涵。
+
+G2 3.0 不强依赖 DataSet，在不需要复杂数据处理时可以不引入。
+
+独立出来的 DataSet 主要提供三个方面的能力：
+
+1. 数据连接（connector）：用于接入不同类型的数据，支持不限于 CSV/GeoJSON/Hierarchy 等；
+2. 数据处理（transform）：进行数据变形、数据转换等，是 DataSet 的**核心功能**，负责和扩展了 G2 在**统计、布局、数据补全**等等方面的数据处理需求；
+3. 状态量管理（state）：支持不同数据视图之间、数据视图和图表之间的通信；
+
+###### `Connector` 负责导入和归一化数据（譬如导入 CSV 数据，导入 GeoJSON 数据等）
+
+```js
+dv.source(csvStr, {
+  type: 'csv',   // 指定使用dsv connector
+  delimiter: ',' // 指定分隔符
+})
+```
+
+###### `Transform` 负责进行各种数据转换操作（譬如图布局、数据统计、数据补全等）
+
+```js
+// 统计某个维度下某个字段的值占总和的比例
+// 每个不同的 dimension 下，field 值占总和的百分比
+dv.transform({
+  type: 'percent',         // 统计类型为 总和百分比
+  field: 'sold',           // 是统计发生的字段（求和，求百分比），统计销量
+  dimension: 'year',       // 统计的维度字段，每年的占比
+  as: 'percent'            // 结果存储在 percent 字段
+});
+
+```
+
+###### 在单个数据视图（DataView）的基础上增加了数据集（DataSet）的概念，通过统一的 DataSet 管理，实现了各个数据视图之间的状态同步和交互。
+
+```js
+// step1: 创建 DataSet, 指定状态量
+const ds = new DataSet({
+  state: {
+    year: '2010'
+  }
+});
+
+// step2: 创建 DataView
+const dv = ds.createView().source(data);
+
+dv.transform({
+  type: 'filter',
+  callback(row) { // 判断某一行是否保留，默认返回 true
+    return row.year === ds.state.year;
+  }
+});
+
+// step3: 引用 DataView
+chart.source(dv);
+
+// step4 更新状态量
+ds.setState('year', '2012');
+```
+
+* [图表联动示例](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/data-set.html#_%E5%9B%BE%E8%A1%A8%E8%81%94%E5%8A%A8%E7%A4%BA%E4%BE%8B)
+* [DateSet 使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/data-set.html)
 
 #### 几何标记 Geom
 
