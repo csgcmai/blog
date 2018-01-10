@@ -7,7 +7,7 @@ import { Chart, Coord, Axis, Tooltip, Geom } from 'bizcharts'
 import { View } from '@antv/data-set';
 import stackedColumnData from '../data/stackedColumnData'
 
-class StackedColumn extends Component {
+class StackedColumnChart extends Component {
   render() {
     let dv = new View().source(stackedColumnData)
 
@@ -42,4 +42,4 @@ class StackedColumn extends Component {
   }
 }
 
-export default StackedColumn;
+export default StackedColumnChart;

@@ -1,12 +1,12 @@
 /**
- * @File: 堆栈面积图
+ * @File: 面积图
  */
 
 import React, { Component } from 'react';
 import { Chart, Axis, Legend, Tooltip, Geom } from 'bizcharts'
 import stackedAreaData from '../data/stackedAreaData'
 
-class StackedArea extends Component {
+class AreaChart extends Component {
   render() {
     const cols = {
       year: {
@@ -35,4 +35,4 @@ class StackedArea extends Component {
   }
 }
 
-export default StackedArea;
+export default AreaChart;

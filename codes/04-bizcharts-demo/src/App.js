@@ -1,25 +1,33 @@
+/**
+ * @TODO: 图表切为无状态组件
+ * @TODO: 索引 图表默认高度 400
+ */
+
 import React, { Component } from 'react';
-import { Chart, Axis, Legend, Tooltip, Geom } from 'bizcharts'
-import MultipleLine from './Page/MultipleLine'
-import StackedColumn from './Page/StackedColumn'
-import StackedArea from './Page/StackedArea'
-import BasicPie from './Page/BasicPie'
+import MultipleLineChart from './Page/MultipleLineChart'
+import StackedColumnChart from './Page/StackedColumnChart'
+import AreaChart from './Page/AreaChart'
+import BasicPieChart from './Page/BasicPieChart'
+import StackedAreaChart from './Page/StackedAreaChart'
 
 class App extends Component {
   render() {
     return (
       <div>
         {/* 多条折线图 */}
-        <MultipleLine />
+        <MultipleLineChart />
 
         {/* 堆叠条形图 */}
-        <StackedColumn />
+        <StackedColumnChart />
 
-        {/* 堆栈面积图 */}
-        <StackedArea />
+        {/* 面积图 */}
+        <AreaChart />
+
+        {/* 堆叠面积图 */}
+        <StackedAreaChart />
 
         {/* 基础饼图 */}
-        <BasicPie />
+        <BasicPieChart />
       </div>
     );
   }

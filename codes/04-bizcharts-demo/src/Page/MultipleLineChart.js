@@ -7,7 +7,7 @@ import { Chart, Axis, Tooltip, Geom } from 'bizcharts'
 import { View } from '@antv/data-set';
 import multipleLineData from '../data/multipleLineData'
 
-class MultipleLine extends Component {
+class MultipleLineChart extends Component {
  render() {
    let dv = new View().source(multipleLineData);
 
@@ -43,4 +43,4 @@ class MultipleLine extends Component {
  }
 }
 
-export default MultipleLine;
+export default MultipleLineChart;

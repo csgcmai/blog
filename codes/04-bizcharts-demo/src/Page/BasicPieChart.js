@@ -7,7 +7,7 @@ import { Chart, Coord, Axis, Legend, Tooltip, Geom, Label } from 'bizcharts'
 import { View } from '@antv/data-set';
 import basicPieData from '../data/basicPieData'
 
-class StackedColumn extends Component {
+class BasicPieChart extends Component {
   render() {
     let dv = new View().source(basicPieData)
 
@@ -66,4 +66,4 @@ class StackedColumn extends Component {
   }
 }
 
-export default StackedColumn;
+export default BasicPieChart;
