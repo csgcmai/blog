@@ -1,18 +1,12 @@
-/**
- * TODO: this.state
- */
 import React, { Component } from 'react';
 import FruitCard from './components/FruitCard';
 import VegetablesList from './components/VegetablesList'
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      iptValue: '',
-      vegetables: []
-    };
-  }
+  state = {
+    iptValue: '',
+    vegetables: []
+  };
   componentDidMount() {
     console.log('**App ComponentDidMount**');
 
