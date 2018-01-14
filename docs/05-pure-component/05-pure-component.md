@@ -1,10 +1,8 @@
-React 实践关键话题（二）
+理解、使用 PureComponent
 ===
-> 2018.01.12 发布，最后更新于 2018.01.12
+> 2018.01.14 发布，最后更新于 2018.01.14
 
-## 理解 `pureComponent`
-
-#### 官方介绍
+## 官方介绍
 
 > React.PureComponent is similar to React.Component. The difference between them is that React.Component doesn’t implement shouldComponentUpdate(), but React.PureComponent implements it with a shallow prop and state comparison.
 >
@@ -24,9 +22,9 @@ React 实践关键话题（二）
 
 [React.PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent)
 
-#### 源码解析
+## 源码解析
 
-###### 源码片段 - `pureComponent` 对新旧 `props` 和 `state` 进行 `shallowEqual` 比较:
+#### 源码片段 - `PureComponent` 对新旧 `props` 和 `state` 进行 `shallowEqual` 比较:
 
 ```js
 /**
@@ -65,11 +63,11 @@ if (type.prototype && type.prototype.isPureReactComponent) {
 }
 ```
 
-无论组件是否是 `pureComponent`，如果定义了 `shouldComponentUpdate()`，那么会调用它并以它的执行结果来判断是否 update。在组件未定义 `shouldComponentUpdate()` 的情况下，会判断该组件是否是 `pureComponent`，如果是的话，会对新旧 `props`、`state` 进行 `shallowEqual` 比较，一旦新旧不一致，会触发 `update`。
+无论组件是否是 `PureComponent`，如果定义了 `shouldComponentUpdate()`，那么会调用它并以它的执行结果来判断是否 update。在组件未定义 `shouldComponentUpdate()` 的情况下，会判断该组件是否是 `PureComponent`，如果是的话，会对新旧 `props`、`state` 进行 `shallowEqual` 比较，一旦新旧不一致，会触发 `update`。
 
 [react-reconciler/src/ReactFiberClassComponent.js](https://github.com/facebook/react/blob/master/packages/react-reconciler/src/ReactFiberClassComponent.js#L202)
 
-###### 源码片段 - fbjs 的 `shallowEqual()`
+#### 源码片段 - fbjs 的 `shallowEqual()`
 
 ```js
 const hasOwnProperty = Object.prototype.hasOwnProperty;
