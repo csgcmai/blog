@@ -1,4 +1,4 @@
-理解、使用 PureComponent
+理解、使用 React.PureComponent
 ===
 > 2018.01.14 发布，最后更新于 2018.01.14
 
