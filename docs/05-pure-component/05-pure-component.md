@@ -127,3 +127,73 @@ function shallowEqual(objA: mixed, objB: mixed): boolean {
 浅判等 只会比较到两个对象的 ownProperty 是否符合 [`Object.is`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 判等，不会递归地去深层比较。
 
 [fbjs/packages/fbjs/src/core/shallowEqual.js](https://github.com/facebook/fbjs/blob/c69904a511b900266935168223063dd8772dfc40/packages/fbjs/src/core/shallowEqual.js#L39)
+
+## PureComponent Usage
+
+#### 为 PureComponent 传递匿名函数作为 prop，导致优化失效
+
+Eg.在 Component App 中调用 PureComponent FruitCard:
+
+```js
+/**
+ * 对于 Banana Card，由于使用匿名函数传递 onHover prop，每次 App 重新 render() 时都会创建一个新的函数，导致
+ * PureComponent FruitCard 的 shouldComponentUpdate 优化失效
+ */
+render() {
+  return (
+    <div>
+      <FruitCard title="Apple Card" onHover={this.handleFruitCardHover} />
+      <FruitCard title="Banana Card" onHover={() => { console.log('Hover =>') }} />
+    </div>
+  );
+}
+```
+
+#### 拆分子 PuerComponent 以提高渲染性能
+
+Eg.`input` 文本域变化频繁触发 Component App 的重新 render()。独立成 PureComponent 的 VegetablesList2 规避了冗余频繁渲染：
+
+```js
+/**
+ * 1.将整个页面的渲染适当地拆分成子 PureComponent 有助于提高渲染性能。比如，表单和复杂列表在同一个 render() 中，表单域的输入字段改变会
+ * 频繁地触发 setState() 从而导致 App 重新 render()。而用于渲染复杂列表的数据其实并没有变化，但由于重新触发 render()，列表还是会重
+ * 新渲染。这种情况下，将列表独立成为 App 的子 PureComponent，可以有效避免表单域变化时列表的重新渲染，大大提高了渲染性能。
+ */
+
+/**
+ * App.js 代码片段
+ */
+componentDidMount() {
+  window.setTimeout(() => {
+    this.setState({
+      vegetables: ['Potato', 'Tomato', 'Eggplant', 'Onion', 'Radish']
+    });
+  }, 2000);
+}
+render() {
+  const { iptValue, vegetables } = this.state;
+  return (
+    <div>
+      <input type="text" value={iptValue} onChange={this.handleIptChange} />
+      {this.renderVegetablesList1()}
+      <VegetablesList vegetables={vegetables} />
+    </div>
+  );
+}
+renderVegetablesList1() {
+  const { vegetables } = this.state;
+  return (<ul>{ vegetables.map((item) => { return (<li key={item}>{item}</li>); }) }</ul>);
+}
+
+/**
+ * VegetablesList.js 代码片段
+ */
+
+// 这里当然推荐使用无状态组件，仅为了演示 PureComponent
+export default class VegetablesList extends PureComponent {
+  render() {
+    const { vegetables } = this.props
+    return (<ul>{ vegetables.map((item) => { return (<li key={item}>{item}</li>); }) }</ul>);
+  }
+}
+```
