@@ -1,7 +1,7 @@
 我在用的 VSCode、ATOM 插件（前端向）
 ===
 
-> 2017.11.18 发布，最后更新于 2018.01.09
+> 2017.11.18 发布，最后更新于 2018.01.14
 
 #### VSCode Install Packages
 
@@ -13,6 +13,8 @@
 * [One Monokai Theme](https://marketplace.visualstudio.com/items?itemName=azemoh.one-monokai): A cross between Monokai and One Dark theme.
 
 #### ATOM Install Packages
+
+由于在新买的 2017 I7 MacPro 上运行久了 ATOM 会卡，果断弃坑 :)
 
 * simplified-chinese-menu: Atom 的简体中文汉化语言包，目前最全的汉化包。包含菜单汉化、右键菜单汉化以及设置汉化
 * minimap：A preview of the full source code
