@@ -1,8 +1,16 @@
 理解、使用 React.PureComponent
 ===
-> 2018.01.14 发布，最后更新于 2018.01.14
+> 2018.01.14 发布，最后更新于 2018.01.15
 
-## 官方介绍
+## 什么是 React.PureComponent?
+
+#### 由来
+
+[React Release V15.3.0](https://github.com/facebook/react/releases/tag/v15.3.0) 中增加了 `React.PureComponent`，一个用来代替 `react-addons-pure-render-mixin` 的基类。
+
+至于为什么将 mixin 替换为 base class，可以参考 [Add React.PureComponent #7195](https://github.com/facebook/react/pull/7195)
+
+#### 官方介绍
 
 > React.PureComponent is similar to React.Component. The difference between them is that React.Component doesn’t implement shouldComponentUpdate(), but React.PureComponent implements it with a shallow prop and state comparison.
 >
