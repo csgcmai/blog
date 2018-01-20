@@ -207,3 +207,53 @@ export default class VegetablesList extends PureComponent {
 ```
 
 完整示例见 [pure-component-usage](https://github.com/AnHongpeng/blog/tree/master/codes/05-pure-component-usage)
+
+## 延展讨论
+
+为什么源码中使用 `hasOwnProperty.call(objB, keysA[i])`，而不是直接 `objB.hasOwnProperty(keysA[i])`?
+
+首先铺垫几个 js 基础知识：
+
+#### 原型链概念
+
+> 当谈到继承时，JavaScript 只有一种结构：对象。每个对象都有一个私有属性（称之为 [[Prototype]]），它持有一个连接到另一个称为其 prototype 对象（原型对象）的链接。该 prototype 对象又具有一个自己的原型，层层向上直到一个对象的原型为 null。（译者注：Object.getPrototypeOf(Object.prototype) === null; // true）根据定义，null 没有原型，并作为这个原型链中的最后一个环节。
+>
+> JavaScript 中几乎所有的对象都是位于原型链顶端的Object的实例。
+>
+> 原型继承经常被视为 JavaScript 的一个弱点，但事实上，原型继承模型比经典的继承模型更加强大。例如，在一个原型模型之上构建一个经典模型是相当容易的。
+
+#### 创建对象和生成原型链
+
+```js
+var o = {a: 1};
+
+// o这个对象继承了Object.prototype上面的所有属性
+// 所以可以这样使用 o.hasOwnProperty('a').
+// hasOwnProperty 是Object.prototype的自身属性。
+// Object.prototype的原型为null。
+// 原型链如下:
+// o ---> Object.prototype ---> null
+
+var a = ["yo", "whadup", "?"];
+
+// 数组都继承于Array.prototype 
+// (indexOf, forEach等方法都是从它继承而来).
+// 原型链如下:
+// a ---> Array.prototype ---> Object.prototype ---> null
+
+function f(){
+  return 2;
+}
+
+// 函数都继承于Function.prototype
+// (call, bind等方法都是从它继承而来):
+// f ---> Function.prototype ---> Object.prototype ---> null
+```
+
+因此，源码中实际调用时 objB 无论是对象还是数组，都可以在其原型链中取到 hasOwnProperty，那为什么用 .call() 呢？
+
+#### 性能
+
+在原型链上查找属性比较耗时，对性能有副作用，这在性能要求苛刻的情况下很重要。另外，试图访问不存在的属性时会遍历整个原型链。
+
+所以，使用 Object.prototype.call 可以避免数组类型在原型链上的查找消耗。
