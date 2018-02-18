@@ -47,3 +47,125 @@ Example：
   <form class="search-form"></form>
 </header>
 ```
+
+## Element（元素）
+
+块的组成部分，无法脱离块去使用。
+
+#### 特点
+
+* 元素的命名用来描述这个元素的用途（“它是什么？” —— `item`, `text`, 等等），而不是它的状态（“什么类型，或它是什么样？” —— `red`, `big`, 等等）
+* 元素的整个命名结构是 `block-name__element-name`，元素名和块名通过双下划线 __ 分隔。
+
+Example：
+
+```html
+<form class="search-form">
+  <input class="search-form__input">
+  <button class="search-form__button">Search</button>
+</form>
+```
+
+#### 元素的使用指南
+
+###### 嵌套规则
+
+* 元素之间可以相互嵌套
+* 可以使用任意多的嵌套层级
+* 一个元素应始终是其块的组成部分，而不是其他元素的。这意味着元素命名不应被定义成类似层级如 `block__elm1__elm2`
+
+Example：
+
+```html
+<!-- 正确，所有元素的命名结构都遵循模式 block-name__element-name -->
+<form class="search-form">
+  <div class="search-form__content">
+    <input class="search-form__input">
+    <button class="search-form__button">Search</button>
+  </div>
+</form>
+
+<!-- 错误 -->
+<form class="search-form">
+  <div class="search-form__content">
+    <!-- 建议: `search-form__input` 或 `search-form__content-input` -->
+    <input class="search-form__content__input">
+    <!-- 建议: `search-form__button` 或 `search-form__content-button` -->
+    <button class="search-form__content__button">Search</button>
+  </div>
+</form>
+```
+
+块的命名实际上定义了命名空间，以确保其中的元素是基于这个块的。
+
+块在其DOM树中允许存在嵌套结构的元素：
+
+Example：
+
+```html
+<div class="block">
+    <div class="block__elem1">
+        <div class="block__elem2">
+            <div class="block__elem3"></div>
+        </div>
+    </div>
+</div>
+```
+
+然而，在BEM方法学中，这样的嵌套结构通常对应着扁平的 CSS 选择器定义：
+
+Example：
+
+```css
+.block {}
+.block__elem1 {}
+.block__elem2 {}
+.block__elem3 {}
+```
+
+这样的好处是，当我们改变块的内部 DOM 结构时，不需要改变每个独立元素的 CSS 代码：
+
+Example：
+
+```html
+<div class="block">
+    <div class="block__elem1">
+        <div class="block__elem2"></div>
+    </div>
+    <div class="block__elem3"></div>
+</div>
+```
+
+块的结构虽然变了，但元素的 CSS 规则和命名并未改变。
+
+###### 成员性（Membership）
+
+元素永远都是块的一部分，而不应脱离块去单独使用它们。
+
+Example：
+
+``` html
+<!-- 正确， 元素均处于 `search-form` 块内 -->
+<form class="search-form">
+    <input class="search-form__input">
+    <button class="search-form__button">Search</button>
+</form>
+
+<!-- 错误， 元素位于了 `search-form` 块的外部 -->
+<form class="search-form"></form>
+<input class="search-form__input">
+<button class="search-form__button">Search</button>
+```
+
+###### 可选择性（Optionality）
+
+元素相对于块组件是可选的。并非所有的块一定要具备元素。
+
+Example：
+
+```html
+<div class="search-form">
+    <input class="input">
+    <button class="button">Search</button>
+</div>
+```
