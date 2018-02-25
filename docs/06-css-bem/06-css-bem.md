@@ -1,6 +1,6 @@
 CSS BEM 规范
 ===
-> 2018.02.18 发布，最后更新于 2018.02.18
+> 2018.02.18 发布，最后更新于 2018.02.25
 
 ## 概要
 
@@ -17,8 +17,10 @@ BEM（块、元素、修饰符）基于Web开发中的组件化实现方式。�
 #### 特点：
 
 * 块的命名用来描述这个块的用途（“它是什么？” —— `menu` or `button`），而不是它的状态（“它是什么样？” —— `red` or `big`）
-* The block shouldn't influence its environment, meaning you shouldn't set the external geometry (margin) or positioning for the block
+* 块不应影响它自身所处的环境，意味着不应为块设置外置的几何（margin）或者位置属性
 * 不要使用 CSS 标签选择器 和 ID 选择器
+
+[StackOverflow - How to set external geometry or positioning for BEM block?](https://stackoverflow.com/questions/48849586/how-to-set-external-geometry-or-positioning-for-bem-block)
 
 这确保了块的独立性，以便于重用块或允许块在不同场景下被使用。
 
@@ -169,3 +171,122 @@ Example：
     <button class="button">Search</button>
 </div>
 ```
+
+## 使用块还是元素？
+
+#### 使用块
+
+如果这部分代码可能会被重用，或者不受其他页面元素的影响，那么应该使用块。
+
+#### 使用元素
+
+如果这部分代码无法脱离于它的父结构而单独存在，那么应该使用元素。
+
+有个例外情况，为了简化开发，当需要将块的元素们分离成更小的部分（子元素）时，按照 BEM 的思想，不能为元素创建元素，在这种情况下，取而代之的是创建一个块而不是元素。
+
+## Modifier（修饰符）
+
+用来定义块或元素的外观、状态或者行为。
+
+#### 特点
+
+* 修饰符的命名用来描述外观（“多大尺寸？” 或 “那套主题？” 等等 —— `size_s` 或者 `theme_islands`）；状态（“和其他块、元素有何不同？” —— `disabled`, `focused` 等）；还有行为（“它表现成如何？”或“它如何响应用户？” —— 例如 `directions_left-top`）
+* 用单下划线 _ 来分割修饰符与块或元素的命名
+
+#### 修饰符类型
+
+###### Boolean
+
+* 当修饰符的存在与否起主要影响时使用 Boolean 类型。例如，`disabled`。当一个 Boolean 类型的修饰符存在时，假定它的值为 true。
+* 命名遵循以下形式：
+    * block-name_modifier-name
+    * block-name__element-name_modifier-name
+
+Example:
+
+```html
+<!-- 为 `search-form` 块定义了 `focused` 这一 Boolean 类型的修饰符 -->
+<form class="search-form search-form_focused">
+    <input class="search-form__input">
+    <!-- 为 `button` 元素定义了 `disabled` 这一 Boolean 类型的修饰符 -->
+    <button class="search-form__button search-form__button_disabled">Search</button>
+</form>
+```
+
+###### Key-value
+
+* 当修饰符的具体值起主要影响作用时使用 Key-value 类型。例如，一个使用 `islands` 设计主题的菜单：`menu_theme_islands`
+* 命名遵循以下形式：
+    * block-name_modifier-name_modifier-value
+    * block-name__element-name_modifier-name_modifier-value
+
+Example:
+
+```html
+<!-- 为 `search-form` 块定义值为 `islands` 的 `theme` 修饰符 -->
+<form class="search-form search-form_theme_islands">
+    <input class="search-form__input">
+    <!-- 为 `button` 元素定义值为 `m` 的 `size` 修饰符 -->
+    <button class="search-form__button search-form__button_size_m">Search</button>
+</form>
+<!-- 错误：不能同时地为两个相同 key 的修饰符定义不同的值 -->
+<form class="search-form
+             search-form_theme_islands
+             search-form_theme_lite">
+    <input class="search-form__input">
+    <button class="search-form__button
+                   search-form__button_size_s
+                   search-form__button_size_m">
+        Search
+    </button>
+</form>
+```
+
+#### 修饰符的使用指南
+
+###### 修饰符不能被单独使用
+
+Example:
+
+```html
+<!-- 正确 -->
+<form class="search-form search-form_theme_islands">
+    <input class="search-form__input">
+    <button class="search-form__button">Search</button>
+</form>
+<!-- 错误。缺少了 `search-form` -->
+<form class="search-form_theme_islands">
+    <input class="search-form__input">
+    <button class="search-form__button">Search</button>
+</form>
+```
+
+## Mix（混合）
+
+在一个 DOM 节点上使用不同 BEM Class 的技巧
+
+使用混合，可以：
+
+* 结合使用多个 BEM Class 的表现和样式，而不用复制代码
+* 基于已有的 UI 组件创建新的语义化组件
+
+Example:
+
+```html
+<!-- `header` 块 -->
+<div class="header">
+    <!-- `search-form` 块与 `header` 块的 `search-form` 元素进行混合 -->
+    <div class="search-form header__search-form"></div>
+</div>
+```
+
+> In this example, we combined the behavior and styles of the search-form block and the search-form element from the header block. This approach allows us to set the external geometry and positioning in the header__search-form element, while the search-form block itself remains universal. As a result, we can use the block in any other environment, because it doesn't specify any padding. This is why we can call it independent.
+
+在本例中，结合了 `search-form` 块和 `header` 块中的 `search-form` 元素的表现和样式。我们可以在 `header__search-form` 元素上设置外部几何、位置
+相关属性，而 `search-form` 块保持通用样式。这样我们可以在其他任何环境中使用 `search-form` 块，它没有指定任何补充样式，这也是为什么可以单独去使用它。
+
+## 相关资源
+
+* [BEM](https://en.bem.info/)
+* [Tencent tmt-wrokflow CSS BEM 书写规范](https://github.com/Tencent/tmt-workflow/wiki/%E2%92%9B-%5B%E8%A7%84%E8%8C%83%5D--CSS-BEM-%E4%B9%A6%E5%86%99%E8%A7%84%E8%8C%83)
+* [StackOverflow - How to set external geometry or positioning for BEM block?](https://stackoverflow.com/questions/48849586/how-to-set-external-geometry-or-positioning-for-bem-block)
