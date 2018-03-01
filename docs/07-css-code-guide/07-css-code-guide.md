@@ -1,6 +1,6 @@
 CSS 编码 规范
 ===
-> 2018.02.25 发布，最后更新于 2018.02.26
+> 2018.02.25 发布，最后更新于 2018.03.01
 
 ## 注释
 
@@ -309,8 +309,18 @@ DOM 渲染过程中，为了减少 CSS 声明规则与 DOM 节点匹配的回溯
 * 用 `border: 0;` 代替 `border: none;`
 * 使用 AntD 的项目，由于 AntD 依赖 Normalize 7，元素默认使用 `box-sizing: border-box;` 布局（即怪异盒模型）
 
+## React 技术栈中的应用
+
+使用 [CSS Modules](https://github.com/camsong/blog/issues/5) 技术。
+
+结合 [create-react-app](https://github.com/facebook/create-react-app)，当前版本是 1.5.2，需要使用 [react-app-rewired](https://github.com/timarney/react-app-rewired) 并配合 [react-app-rewire-css-modules](https://github.com/codebandits/react-app-rewire-css-modules) 来使用 CSS 模块化技术。
+
+在未来的 create-react-app 2.x 版本中将会更好地支持 CSS 模块化，[Add support for CSS Modules with explicit filename - [name].module.css](https://github.com/facebook/create-react-app/pull/2285)，现处于持续关注中
+
 ## 参考资源
 
 * [网易 NEC 规范](http://nec.netease.com/standard/css-sort.html)
 * [腾讯 AlloyTeam CSS 规范](http://alloyteam.github.io/CodeGuide/#css)
 * [百度 fex-team CSS 规范](https://github.com/fex-team/styleguide/blob/master/css.md)
+* [CSS Modules 详解及 React 中实践](https://github.com/camsong/blog/issues/5)
+* [Add support for CSS Modules with explicit filename - [name].module.css](https://github.com/facebook/create-react-app/pull/2285)
