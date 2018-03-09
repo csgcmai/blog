@@ -56,16 +56,16 @@ feat: AntD 升级至 V3.2.0
 
 高频：
 
-* **feat**: 一个新的功能
-* **fix**: 修复 Bug
-* **perf**: 提高性能的代码
-* **style**: 编码规范、风格上的修改，不影响功能
+* feat: 一个新的功能
+* fix: 修复 Bug
+* perf: 提高性能的代码
+* style: 编码规范、风格上的修改，不影响功能
 
 低频：
 
-* **docs**: 仅改变项目文档
-* **build**: 改变项目构建流程或包依赖
-* **ci**: 改变 CI 配置或执行脚本 package.json scripts
+* docs: 仅改变项目文档
+* build: 改变项目构建流程或包依赖
+* ci: 改变 CI 配置或执行脚本 package.json scripts
 
 #### Subject（必要）
 
