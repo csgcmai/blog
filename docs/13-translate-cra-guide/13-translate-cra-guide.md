@@ -105,7 +105,98 @@ Fetch API cannot load http://localhost:4000/api/todos. No 'Access-Control-Allow-
 
 ## Adding Custom Environment Variables
 
+> 注意：该功能适用于 `react-scripts@0.2.3` 及更高版本
 
+在项目中我们可以像操作 js 本地变量一样操作环境变量，默认情况下可以使用已定义的 `NODE_ENV` 和其他以 `REACT_APP_` 开头的环境变量。
+
+**环境变量的嵌入是在 build 阶段进行的。**由于 Create React App 产生静态的 HTML/CSS/JS 打包文件，因此无法在运行时取环境变量。如果想在运行时取它们，需要将 HTML 入服务器缓存并在运行时进行替换，参考[这里](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#injecting-data-from-the-server-into-the-page)。可以在任何改变环境变量时重新在服务器 Build。
+
+> 注意：自定义的环境变量要以 `REACT_APP_` 开头，其他除了 `NODE_ENV` 以外的变量都将被忽略，以避免意外的 [命名冲突](https://github.com/facebook/create-react-app/issues/865#issuecomment-252199527)。改变任何环境变量需要重启在运行的本地服务。
+
+这些环境变量会被定义在 `process.env`。例如，命名为 `REACT_APP_SECRET_CODE` 的环境变量会被在 JS 中暴露为 `process.env.REACT_APP_SECRET_CODE`。
+
+`NODE_ENV` 是特殊的内置环境变量，可以从 `process.env.NODE_ENV` 中去取。当执行 `npm start` 时，它等于 `development`，当执行 `npm test` 时，它等于 `test`，当执行 `npm run build` 打生产包时，它等于 `production`。注意**`NODE_ENV` 无法被手动重写。**这样防止开发者部署生产环境打包过慢。
+
+这些环境变量对于展示部署信息和引用脱离版本控制外的敏感数据非常有用。
+
+首先，需要确保环境变量已定义。例如，我们在 `<form>` 中引用一个隐秘的变量定义：
+
+```
+render() {
+  return (
+    <div>
+      <small>You are running this application in <b>{process.env.NODE_ENV}</b> mode.</small>
+      <form>
+        <input type="hidden" defaultValue={process.env.REACT_APP_SECRET_CODE} />
+      </form>
+    </div>
+  );
+}
+```
+
+打包期间，`process.env.REACT_APP_SECRET_CODE` 会被替换为当前环境变量 `REACT_APP_SECRET_CODE` 的值。注意 `NODE_ENV` 变量值将会被自动设置。
+
+从浏览器端加载应用检查 `<input>` 后，会发现它的值被设置为 `abcdef`，并且当执行 `npm start` 后加粗字体会显示当前环境变量：
+
+```
+<div>
+  <small>You are running this application in <b>development</b> mode.</small>
+  <form>
+    <input type="hidden" value="abcdef" />
+  </form>
+</div>
+```
+
+上面强调从当前环境取 `REACT_APP_SECRET_CODE` 变量。为了引用到该变量，我们首先要确保该变量在环境中被定义。可以通过两种方式定义环境变量：在 `shell` 或 `.env` 文件中定义。这两种定义方式后文作详细介绍。
+
+访问 `NODE_ENV` 对于有条件地去执行动作非常有用：
+
+```
+if (process.env.NODE_ENV !== 'production') {
+  analytics.disable();
+}
+```
+
+使用 `npm run build` 进行编译时，压缩环节会跳过该场景，打包后的文件体积会更小。
+
+#### 在 HTML 中引用环境变量
+
+> 注意：该功能适用于 `react-scripts@0.9.0` 及更高版本
+
+我们可以在 `public/index.html` 中注入以 `REACT_APP_` 开头的环境变量。例如：
+
+```
+<title>%REACT_APP_WEBSITE_NAME%</title>
+```
+
+重点注意：
+
+* 与内置环境变量（`NODE_ENV` 和 `PUBLIC_URL`）所不同的是，自定义的变量名必须以 `REACT_APP_` 开头；
+* 环境变量的注入是在打包编译阶段进行的，如果需要在运行时注入，[请参考这里](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#generating-dynamic-meta-tags-on-the-server)
+
+#### 在 Shell 中添加局部环境变量
+
+在不同系统中定义环境变量有所差异。另外这种方式变量是临时存在于 shell 的会话期间的。
+
+###### windows(cmd.exe)
+
+```
+set "REACT_APP_SECRET_CODE=abcdef" && npm start
+```
+
+(注意：变量周围的引号是必需的，以避免尾空格)
+
+###### Windows(Powershell)
+
+```
+($env:REACT_APP_SECRET_CODE = "abcdef") -and (npm start)
+```
+
+###### Linux, macOS (Bash)
+
+```
+REACT_APP_SECRET_CODE=abcdef npm start
+```
 
 ## 参考资源
 
