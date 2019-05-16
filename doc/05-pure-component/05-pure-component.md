@@ -206,7 +206,7 @@ export default class VegetablesList extends PureComponent {
 }
 ```
 
-完整示例见 [pure-component-usage](https://github.com/AnHongpeng/blog/tree/master/codes/05-pure-component-usage)
+完整示例见 [pure-component-usage](https://github.com/AnHongpeng/blog/tree/master/docCode/05-pure-component-usage)
 
 ## 延展讨论
 

@@ -367,7 +367,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProductCo
 
 将 APP 公有的数据仅存在 Store 中的一处，而不是根据不同业务模块编码多个 action 和 reducer，并将这些公有数据存在各自业务模块下
 
-![Bad actions](../../media/02/bad-actions.png)
+![Bad actions](../../docAssets/02/bad-actions.png)
 
 注意在 fetch 公有数据前先检查 Store 中是否已经存在了，避免重复请求
 
@@ -377,7 +377,7 @@ export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProductCo
 
 对于应用层使用到不需要 dispatch 异步 action 的请求，推荐单独索引在一个模块中，而不是硬编码在应用层。偶尔随着业务的复杂，这个请求也会被其他模块所使用，命名一般加 axios 或 fetch 前缀
 
-![axios data](../../media/02/axios-data.png)
+![axios data](../../docAssets/02/axios-data.png)
 
 应用层调用：
 

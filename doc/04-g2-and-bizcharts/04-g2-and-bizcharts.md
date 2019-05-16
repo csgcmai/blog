@@ -13,7 +13,7 @@
 
 1024 条数据的情况下折线图的性能对比（3.0 做了 Canvas 图层合并、数据处理 DateSet 模块外置，将数据处理与图表绘制解耦）：
 
-![1024 条数据的情况下折线图的性能对比](../../media/04/performance.jpg)
+![1024 条数据的情况下折线图的性能对比](../../docAssets/04/performance.jpg)
 
 #### 可视化图形语法
 
@@ -37,7 +37,7 @@ Anv 官推的基于 G2 的 React 图表库。
 
 #### G2 图表组成
 
-![compose](../../media/04/compose.png)
+![compose](../../docAssets/04/compose.png)
 
 #### DateSet
 
@@ -111,7 +111,7 @@ ds.setState('year', '2012');
 
 [图表联动示例](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/data-set.html#_%E5%9B%BE%E8%A1%A8%E8%81%94%E5%8A%A8%E7%A4%BA%E4%BE%8B)
 
-![dataSet](../../media/04/dataSet.svg)
+![dataSet](../../docAssets/04/dataSet.svg)
 
 [DateSet 使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/data-set.html)
 
@@ -119,7 +119,7 @@ ds.setState('year', '2012');
 
 G2 中并没有特定的图表类型（柱状图、散点图、折线图等）的概念，G2 生成的图表类型，主要由几何标记决定。几何标记用来描述 点、线、面这些几何图形。
 
-![什么是 Geom](../../media/04/what-is-geom.png)
+![什么是 Geom](../../docAssets/04/what-is-geom.png)
 
 业务中最常用的几何标记类型：
 
@@ -167,7 +167,7 @@ coordType | 说明
 
 例如下图展示的层叠柱状图，在不同坐标系下就变换成了其他的图表类型：
 
-![coord](../../media/04/coord.png)
+![coord](../../docAssets/04/coord.png)
 
 上图左侧为层叠柱状图，中间的饼图则是层叠柱状图在极坐标下对 x y 两个坐标轴进行转置后的结果，其中 x 轴被映射为半径，y 轴被映射成了角度。而最右边的牛眼图则相反，y 轴映射为半径。
 
@@ -178,7 +178,7 @@ chart.coord('coordType'[, cfg]);
 
 G2 提供的坐标系支持一系列的变换操作：旋转（rotate）、缩放（scale）、X、Y轴交换（transpose）、镜像（reflect）
 
-![coord-scale](../../media/04/coord-scale.gif)
+![coord-scale](../../docAssets/04/coord-scale.gif)
 
 ```js
 // 坐标系变换
@@ -196,7 +196,7 @@ chart 对象提供了各种事件支持，G2 中，我们将事件分为如下�
 3. tooltip 事件；`chart.on('tooltip:show', ev => {}); // tooltip 展示`
 4. 图形元素事件，以 『图形元素名』+ 『基础事件名』 的方式来组合图形元素上的事件。`chart.on('axis-label:click', ev => {});`
 
-![chart-event](../../media/04/chart-event.png)
+![chart-event](../../docAssets/04/chart-event.png)
 
 Eg. [饼图点击跳转](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/chart-event.html#_%E7%A4%BA%E4%BE%8B-1%EF%BC%9A%E9%A5%BC%E5%9B%BE%E7%82%B9%E5%87%BB%E8%B7%B3%E8%BD%AC)
 
@@ -276,9 +276,9 @@ chart.intervalStack()
 chart.render();
 ```
 
-[G2 实现基础饼图 Demo](https://github.com/AnHongpeng/blog/blob/master/codes/04-bizcharts-demo/g2-demo/g2-basic-pie.html)
+[G2 实现基础饼图 Demo](https://github.com/AnHongpeng/blog/blob/master/docCode/04-bizcharts-demo/g2-demo/g2-basic-pie.html)
 
-[BizCharts 实现基础饼图 Demo](https://github.com/AnHongpeng/blog/blob/master/codes/04-bizcharts-demo/src/Page/BasicPie.js)
+[BizCharts 实现基础饼图 Demo](https://github.com/AnHongpeng/blog/blob/master/docCode/04-bizcharts-demo/src/Page/BasicPie.js)
 
 [Echarts 实现基础饼图 Demo](http://echarts.baidu.com/demo.html#pie-simple)
 
@@ -297,7 +297,7 @@ chart.render();
 
 #### 多Y轴图表的良好支持
 
-![多Y轴图表](../../media/04/multi-y.png)
+![多Y轴图表](../../docAssets/04/multi-y.png)
 
 [如何绘制多 y 轴图表](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/fqas.html#_如何绘制多-y-轴图表)
 
@@ -318,13 +318,13 @@ chart.on('axis-label:click', ev => {});
 
 AntV 3.0 动画模块也从底层做了深入的优化，支持自定义动画，也更加流畅。
 
-![自定义动画](../../media/04/custom-animation.gif)
+![自定义动画](../../docAssets/04/custom-animation.gif)
 
 #### 支持分面（Facet）图表
 
 分面，将一份数据按照某个维度分隔成若干子集，然后创建一个图表的矩阵，将每一个数据子集绘制到图形矩阵的窗格中。
 
-![facet](../../media/04/facet.png)
+![facet](../../docAssets/04/facet.png)
 
 #### 支持图片导出
 
