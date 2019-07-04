@@ -1,6 +1,6 @@
 React/JSX/ES 编码规范及最佳实践
 ===
-> 2018.03.13 发布，最后更新于 2018.04.20
+> 2018.03.13 发布，最后更新于 2019.07.04
 
 ## ES
 
@@ -68,6 +68,7 @@ function(hasName) { // bad - unnecessary function call
 * 使用 `===`，避免使用 `==`，例外是当需要判断 `null || undefined` 时可以使用 `obg == null`；
 * 使用浏览器全局变量时加上 `window` 前缀，`document` 和 `navigator` 除外；
 * 不要使用下划线 _ 结尾或开头来命名属性和方法，实际上仅通过改变命名，它依然不是私有的，文件模块的私有方法一般在 Class 外通过 function 定义
+* 使用默认值语法设置函数参数的默认值
 * 由于 ES6 修饰器 decorator 尚未纳入 ES 规范，且 CRA 不推荐使用 decorator，我们暂不使用修饰器；
 * 请统一将编辑器设置为“保存时在文件末尾添加一个空行”，这样便于 Review Git Commit 的文件修改一致性
 * 一行中代码超过 120 字符时，应进行适当的换行处理，Eg:
@@ -89,6 +90,116 @@ render() {
     </ComponentA>
   )
 }
+```
+
+* 函数的参数如果是对象的成员，优先使用解构赋值，Eg：
+
+```js
+// bad
+function getFullName(user) {
+  const firstName = user.firstName
+  const lastName = user.lastName
+}
+
+// good
+function getFullName(obj) {
+  const { firstName, lastName } = obj
+}
+
+// best
+function getFullName({ firstName, lastName }) {}
+```
+
+* 对象尽量静态化，一旦定义，就不得随意添加新的属性。如果添加属性不可避免，要使用 `Object.assign` 方法，Eg：
+
+```js
+// bad
+const a = {}
+a.x = 3
+
+// if reshape unavoidable
+const a = {}
+Object.assign(a, { x: 3 })
+
+// good
+const a = { x: null }
+a.x = 3
+```
+
+* 使用扩展运算符（...）拷贝数组，Eg：
+
+```js
+// bad
+const len = items.length
+const itemsCopy = []
+let i
+
+for (i = 0; i < len; i++) {
+  itemsCopy[i] = items[i]
+}
+
+// good
+const itemsCopy = [...items]
+```
+
+* 使用 `Array.from` 方法，将类似数组的对象转为数组，Eg：
+
+```js
+const foo = document.querySelectorAll('.foo')
+const nodes = Array.from(foo)
+```
+
+* 箭头函数取代 `Function.prototype.bind`，不应再用 self/_this/that 绑定 this，Eg：
+
+```js
+// bad
+const self = this
+const boundMethod = function(...params) {
+  return method.apply(self, params)
+}
+
+// acceptable
+const boundMethod = method.bind(this)
+
+// best
+const boundMethod = (...params) => method.apply(this, params)
+```
+
+* 声明函数时，所有配置项都应该集中在一个对象，放在最后一个参数，布尔值不可以直接作为参数，Eg：
+
+```js
+// bad
+function divide(a, b, option = false) {}
+
+// good
+function divide(a, b, { option = false } = {}) {}
+```
+
+* 不要在函数体内使用 arguments 变量，使用 rest 运算符（...）代替。因为 rest 运算符显式表明你想要获取参数，而且 arguments 是一个类似数组的对象，而 rest 运算符可以提供一个真正的数组，Eg：
+
+```js
+// bad
+function concatenateAll() {
+  const args = Array.prototype.slice.call(arguments)
+  return args.join('')
+}
+
+// good
+function concatenateAll(...args) {
+  return args.join('')
+}
+```
+
+* 注意区分 Object 和 Map，只有模拟现实世界的实体对象时，才使用 Object。如果只是需要 key: value 的数据结构，使用 Map 结构。因为 Map 有内建的遍历机制，Eg：
+
+```js
+let map = new Map(arr)
+
+for (let key of map.keys()) { console.log(key) }
+
+for (let value of map.values()) { console.log(value) }
+
+for (let item of map.entries()) { console.log(item) }
 ```
 
 #### ES 最佳实践
@@ -340,3 +451,4 @@ SFC.defaultProps = {
 * [Airbnb JavaScript Style Guide](https://github.com/sivan/javascript-style-guide/blob/master/es5/README.md)
 * [Airbnb ES6 规范](https://github.com/yuche/javascript)
 * [Airbnb React/JSX 编码规范](https://github.com/JasonBoy/javascript/tree/master/react)
+* [es6tutorial](https://github.com/ruanyf/es6tutorial/blob/gh-pages/docs/style.md)
