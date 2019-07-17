@@ -1,16 +1,16 @@
-理解、使用 React.PureComponent
-===
-> 2018.01.14 发布，最后更新于 2018.01.15
+# 理解、使用 React.PureComponent
 
-## 什么是 React.PureComponent?
+> 2018.01.14 发布，最后更新于 201.07.17
 
-#### 由来
+## （一）什么是 React.PureComponent
+
+### 由来
 
 [React Release V15.3.0](https://github.com/facebook/react/releases/tag/v15.3.0) 中增加了 `React.PureComponent`，一个用来代替 `react-addons-pure-render-mixin` 的基类。
 
 至于为什么将 mixin 替换为 base class，可以参考 [Add React.PureComponent #7195](https://github.com/facebook/react/pull/7195)
 
-#### 官方介绍
+### 官方介绍
 
 > React.PureComponent is similar to React.Component. The difference between them is that React.Component doesn’t implement shouldComponentUpdate(), but React.PureComponent implements it with a shallow prop and state comparison.
 >
@@ -19,7 +19,7 @@
 > React.PureComponent’s shouldComponentUpdate() only shallowly compares the objects. If these contain complex data structures, it may produce false-negatives for deeper differences. Only extend PureComponent when you expect to have simple props and state, or use forceUpdate() when you know deep data structures have changed. Or, consider using immutable objects to facilitate fast comparisons of nested data.
 >
 > Furthermore, React.PureComponent’s shouldComponentUpdate() skips prop updates for the whole component subtree. Make sure all the children components are also “pure”.
-
+>
 > `React.PureComponent` 类似于 `React.Component`。两者的区别是 `React.Component` 不会执行 `shouldComponentUpdate()`，而 `React.PureComponen` 会执行它并且进行 `prop` 和 `state` 的浅比较。
 >
 > 对于传递相同的 `prop` 和 `state` 会有一致的渲染结果的组件，我们可以使用 `React.PureComponent` 来提高性能。
@@ -30,9 +30,9 @@
 
 [React.PureComponent](https://reactjs.org/docs/react-api.html#reactpurecomponent)
 
-## 源码解析
+## （二）源码解析
 
-#### 源码片段 - `PureComponent` 对新旧 `props` 和 `state` 进行 `shallowEqual` 比较:
+### 源码片段 - `PureComponent` 对新旧 `props` 和 `state` 进行 `shallowEqual` 比较
 
 ```js
 /**
@@ -75,7 +75,7 @@ if (type.prototype && type.prototype.isPureReactComponent) {
 
 [react-reconciler/src/ReactFiberClassComponent.js](https://github.com/facebook/react/blob/master/packages/react-reconciler/src/ReactFiberClassComponent.js#L202)
 
-#### 源码片段 - fbjs 的 `shallowEqual()`
+### 源码片段 - fbjs 的 `shallowEqual()`
 
 ```js
 const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -136,9 +136,9 @@ function shallowEqual(objA: mixed, objB: mixed): boolean {
 
 [fbjs/packages/fbjs/src/core/shallowEqual.js](https://github.com/facebook/fbjs/blob/c69904a511b900266935168223063dd8772dfc40/packages/fbjs/src/core/shallowEqual.js#L39)
 
-## PureComponent Usage
+## （三）PureComponent Usage
 
-#### 为 PureComponent 传递匿名函数作为 prop，导致优化失效
+### 为 PureComponent 传递匿名函数作为 prop，导致优化失效
 
 Eg.在 Component App 中调用 PureComponent FruitCard:
 
@@ -157,7 +157,7 @@ render() {
 }
 ```
 
-#### 拆分子 PuerComponent 以提高渲染性能
+### 拆分子 PuerComponent 以提高渲染性能
 
 Eg.`input` 文本域变化频繁触发 Component App 的重新 render()。独立成 PureComponent 的 VegetablesList2 规避了冗余频繁渲染：
 
@@ -208,13 +208,13 @@ export default class VegetablesList extends PureComponent {
 
 完整示例见 [pure-component-usage](https://github.com/AnHongpeng/blog/tree/master/docCode/05-pure-component-usage)
 
-## 延展讨论
+## （四）延展讨论
 
 为什么源码中使用 `hasOwnProperty.call(objB, keysA[i])`，而不是直接 `objB.hasOwnProperty(keysA[i])`?
 
 首先铺垫几个 js 基础知识：
 
-#### 原型链概念
+### 原型链概念
 
 > 当谈到继承时，JavaScript 只有一种结构：对象。每个对象都有一个私有属性（称之为 [[Prototype]]），它持有一个连接到另一个称为其 prototype 对象（原型对象）的链接。该 prototype 对象又具有一个自己的原型，层层向上直到一个对象的原型为 null。（译者注：Object.getPrototypeOf(Object.prototype) === null; // true）根据定义，null 没有原型，并作为这个原型链中的最后一个环节。
 >
@@ -222,7 +222,7 @@ export default class VegetablesList extends PureComponent {
 >
 > 原型继承经常被视为 JavaScript 的一个弱点，但事实上，原型继承模型比经典的继承模型更加强大。例如，在一个原型模型之上构建一个经典模型是相当容易的。
 
-#### 创建对象和生成原型链
+### 创建对象和生成原型链
 
 ```js
 var o = {a: 1};
@@ -236,7 +236,7 @@ var o = {a: 1};
 
 var a = ["yo", "whadup", "?"];
 
-// 数组都继承于Array.prototype 
+// 数组都继承于Array.prototype
 // (indexOf, forEach等方法都是从它继承而来).
 // 原型链如下:
 // a ---> Array.prototype ---> Object.prototype ---> null
@@ -252,7 +252,7 @@ function f(){
 
 因此，源码中实际调用时 objB 无论是对象还是数组，都可以在其原型链中取到 hasOwnProperty，那为什么用 .call() 呢？
 
-#### 性能
+### 性能
 
 在原型链上查找属性比较耗时，对性能有副作用，这在性能要求苛刻的情况下很重要。另外，试图访问不存在的属性时会遍历整个原型链。
 
