@@ -1,9 +1,10 @@
-[AntV](https://antv.alipay.com/zh-cn/index.html)、[G2](https://antv.alipay.com/zh-cn/g2/3.x/index.html) 和 [Bizcharts](https://alibaba.github.io/BizCharts/index.html)
-===
+# [AntV](https://antv.alipay.com/zh-cn/index.html)、[G2](https://antv.alipay.com/zh-cn/g2/3.x/index.html) 和 [Bizcharts](https://alibaba.github.io/BizCharts/index.html)
 
-## AntV、G2、BizCharts 是什么？
+> 2018.01.06 发布，最后更新于 2019.07.17
 
-#### AntV 与 G2
+## （一）AntV、G2、BizCharts 是什么
+
+### AntV 与 G2
 
 * AntV 是蚂蚁金服体验技术部团队提供的一套[数据可视化](https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/1252367?fr=aladdin)方案。[AntV team](https://github.com/antvis)
 * AntV 中主要包含 [G2](https://antv.alipay.com/zh-cn/g2/3.x/index.html)、[G6](https://antv.alipay.com/zh-cn/g6/1.x/index.html)、[F2](https://antv.alipay.com/zh-cn/f2/3.x/index.html) 及一套完整的**图表使用指引**和**可视化设计规范**
@@ -15,31 +16,29 @@
 
 ![1024 条数据的情况下折线图的性能对比](../../docAssets/04/performance.jpg)
 
-#### 可视化图形语法
+### 可视化图形语法
 
 **数据可视化的目的** 在于用图形化的手段，清晰有效地传达和沟通信息，一图胜千言。
 
 Leland Wilkinson 在上世纪90年代开发可视化软件时编写了[《The Grammar of Graphics》](https://book.douban.com/subject/10123863/)，用语法描述图形的产生，以自底向上的方式 **组织最基本的元素形成更高级的元素**。此后，开源社区逐渐诞生了对图形语法的各种语言版本实现： R 语言社区的 ggplot2；Python 技术栈实现的 Bokeh；基于 D3 的 Vega。G2 是目前 JavaScript 社区对《The Grammar of Graphics》还原度最高的实现，刚一开源就得到 Leland Wilkinson 本人的肯定。
 
-图形语法的组成：https://antv.alipay.com/zh-cn/g2/3.x/tutorial/the-grammar-of-graphics.html#_图形语法的组成
-
 和传统 **枚举图表类型** 的可视化工具相比，基于图形语法的可视化工具的特征是：生成每一个图形的过程就是组合不同的基础图形语法的过程。图形语法的灵活和强大之处就在于，我们只需要改动其中某一步的处理过程，就能得到完全不同的、全新的图表。
 
 > 参考 [可视化图形语法概述](https://zhuanlan.zhihu.com/p/32178892?group_id=926791155145109504)
 
-#### BizCharts
+### BizCharts
 
 Anv 官推的基于 G2 的 React 图表库。
 
 此外，[Viser](https://viserjs.github.io/) 对 G2 3.0 做了通用的抽象，已经支持对 React、Angular、Vue 三个框架的深度整合，对应的是 viser-react、viser-ng 和 viser-vue。
 
-## G2 中的几个重要基础概念
+## （二）G2 中的几个重要基础概念
 
-#### G2 图表组成
+### G2 图表组成
 
 ![compose](../../docAssets/04/compose.png)
 
-#### DateSet
+### DateSet
 
 自 G2 3.0 版本开始，原先内置的数据处理模块 frame 从 G2 包中抽离出来，独立成为 DataSet 包。DataSet 的目标是为数据可视化场景提供 **状态驱动（state driven）** 的、丰富而强大的数据处理能力。
 
@@ -59,7 +58,7 @@ G2 3.0 不强依赖 DataSet，在不需要复杂数据处理时可以不引入�
 2. 数据处理（transform）：进行数据变形、数据转换等，是 DataSet 的**核心功能**，负责和扩展了 G2 在**统计、布局、数据补全**等等方面的数据处理需求；
 3. 状态量管理（state）：支持不同数据视图之间、数据视图和图表之间的通信；
 
-###### `Connector` 负责导入和归一化数据（譬如导入 CSV 数据，导入 GeoJSON 数据等）
+#### `Connector` 负责导入和归一化数据（譬如导入 CSV 数据，导入 GeoJSON 数据等）
 
 ```js
 dv.source(csvStr, {
@@ -68,7 +67,7 @@ dv.source(csvStr, {
 })
 ```
 
-###### `Transform` 负责进行各种数据转换操作（譬如图布局、数据统计、数据补全等）
+#### `Transform` 负责进行各种数据转换操作（譬如图布局、数据统计、数据补全等）
 
 ```js
 // 统计某个维度下某个字段的值占总和的比例
@@ -82,7 +81,7 @@ dv.transform({
 
 ```
 
-###### 在单个数据视图（DataView）的基础上增加了数据集（DataSet）的概念，通过统一的 DataSet 管理，实现了各个数据视图之间的状态同步和交互。
+#### 在单个数据视图（DataView）的基础上增加了数据集（DataSet）的概念，通过统一的 DataSet 管理，实现了各个数据视图之间的状态同步和交互
 
 ```js
 // step1: 创建 DataSet, 指定状态量
@@ -115,7 +114,7 @@ ds.setState('year', '2012');
 
 [DateSet 使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/data-set.html)
 
-#### 几何标记 Geom
+### 几何标记 Geom
 
 G2 中并没有特定的图表类型（柱状图、散点图、折线图等）的概念，G2 生成的图表类型，主要由几何标记决定。几何标记用来描述 点、线、面这些几何图形。
 
@@ -132,7 +131,7 @@ Geom | 图表类型 | 描述
 
 > 几何标记（Geom）和视觉通道构成了可视化编码，[G2 图表类型使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/chart-type.html) 从 **Geom 数据维度、Geom 自由度、视觉通道、图形形状** 4个角度描述了 **“图表类型”** 在可视化框架中的实现思路。
 
-#### 图形属性（视觉通道）
+### 图形属性（视觉通道）
 
 图形属性对应视觉编码中的 **视觉通道**，不同的几何标记拥有自己的图形属性。
 
@@ -152,7 +151,7 @@ chart.point().position('a*b').color('c');
 
 > [G2 图形属性使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/attr.html)
 
-#### 坐标系 Coord
+### 坐标系 Coord
 
 G2 包含了两种类型坐标系（polar、theta、helix 均属于极坐标），目前所有的坐标系均是 2 维的。
 
@@ -187,7 +186,7 @@ chart.coord().rotate(90).scale(1.3, 5).reflect('x').transpose();
 
 [坐标系介绍](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/coord.html)
 
-#### 图表事件
+### 图表事件
 
 chart 对象提供了各种事件支持，G2 中，我们将事件分为如下事件：
 
@@ -202,7 +201,7 @@ Eg. [饼图点击跳转](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/chart-eve
 
 [图表事件-使用教程](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/chart-event.html#_%E5%9B%BE%E8%A1%A8%E4%BA%8B%E4%BB%B6)
 
-## 思考，G2 与 传统可枚举图表解决方案的区别？
+## （三）思考，G2 与 传统可枚举图表解决方案的区别
 
 ```js
 const { DataView } = DataSet;
@@ -287,21 +286,21 @@ chart.render();
 * 枚举方式的开发模式，通过 **整合数据，得到一个配置项**，用于渲染。相比于 图形语法的流程，不利于调试。图形语法的优势在于，可枚举的配置项被分散在各个流程中，同样，数据调试可以在每个流程中进行。
 * G2 DateSet、DateView 通过统一的数据集管理去实现多视图状态同步的能力，是典型的将数据处理与视图渲染分离的优势，而这是枚举型方案不具备的（或者说是不便于实现的）。
 
-## AntV 其他功能亮点
+## （四）AntV 其他功能亮点
 
-#### 支持多种数据源的解析
+### 支持多种数据源的解析
 
 独立的数据处理模块（DateSet）支持多种数据源的解析，可以将 [csv](https://zh.wikipedia.org/wiki/%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94%E5%80%BC)、dsv、GeoJSON 转换成标准 JSON
 
 [Connector 数据接入](https://antv.alipay.com/zh-cn/g2/3.x/api/connector.html)
 
-#### 多Y轴图表的良好支持
+### 多Y轴图表的良好支持
 
 ![多Y轴图表](../../docAssets/04/multi-y.png)
 
 [如何绘制多 y 轴图表](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/fqas.html#_如何绘制多-y-轴图表)
 
-#### 事件完备，无限交互可能
+### 事件完备，无限交互可能
 
 AntV 3.0 版本中，图表上的 **任意元素** 均可捕获鼠标和触摸事件，提供了更精准的事件监听！
 
@@ -314,24 +313,24 @@ chart.on('axis-label:mouseleave', ev => {});
 chart.on('axis-label:click', ev => {});
 ```
 
-#### 自定义动画
+### 自定义动画
 
 AntV 3.0 动画模块也从底层做了深入的优化，支持自定义动画，也更加流畅。
 
 ![自定义动画](../../docAssets/04/custom-animation.gif)
 
-#### 支持分面（Facet）图表
+### 支持分面（Facet）图表
 
 分面，将一份数据按照某个维度分隔成若干子集，然后创建一个图表的矩阵，将每一个数据子集绘制到图形矩阵的窗格中。
 
 ![facet](../../docAssets/04/facet.png)
 
-#### 支持图片导出
+### 支持图片导出
 
 直接调用 `chart.downloadImage();` 即可导出图片。
 
 [如何导出图片](https://antv.alipay.com/zh-cn/g2/3.x/tutorial/fqas.html#_%E5%A6%82%E4%BD%95%E5%AF%BC%E5%87%BA%E5%9B%BE%E7%89%87)
 
-## 辅助阅读
+## （五）辅助阅读
 
 * [AntV 3.0 — 三生万物](https://zhuanlan.zhihu.com/p/31452637)
