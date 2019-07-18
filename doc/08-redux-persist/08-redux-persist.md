@@ -1,14 +1,14 @@
-redux-persist
-===
-> 2018.03.01 发布，最后更新于 2018.03.01
+# redux-persist 使用介绍
+
+> 2018.03.01 发布，最后更新于 2019.07.18
 
 持久化和再水化 Redux Store，当前版本 V5.9.1
 
-## 基本用例
+## （一）基本用例
 
 基本用例中涉及配置 `persistReducer` 和 `persistStore`。**重要：**每个应用均要确定 `state` 合并等级，默认1级。
 
-```javascript
+```js
 // configureStore.js
 
 import { createStore } from 'redux'
@@ -32,7 +32,7 @@ export default () => {
 
 如果要结合 react 使用，使用 [PersistGate](https://github.com/rt2zz/redux-persist/blob/master/docs/PersistGate.md) 来包裹应用的根元素。这会延迟 APP 的 UI 渲染直到持久化数据被重新取回并且存入 redux store。**注意**`PersistGate` 的 `loading` 属性可以是 null 或其他任何 react 实例。(e.g. `loading={<Loading />}`)
 
-```javascript
+```js
 import { PersistGate } from 'redux-persist/integration/react'
 
 // ... normal setup, create store and persistor, import components etc.
@@ -48,6 +48,6 @@ const App = () => {
 };
 ```
 
-## 线上资源
+## （二）线上资源
 
 * [Github redux-persist](https://github.com/rt2zz/redux-persist)
