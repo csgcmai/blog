@@ -1,6 +1,6 @@
-理解 Flow 中的泛型类型（Generic Types）
-===
-> 2019.07.16 发布，最后更新于 2019.07.16
+# 理解 Flow 中的泛型类型（Generic Types）
+
+> 2019.07.16 发布，最后更新于 2019.07.18
 
 `React` 中使用 [Flow](https://flow.org/en/) 进行静态类型检测，在 `shared/ReactTypes.js` 中大量使用了 Flow 的语法特性，其中对泛型的理解是个难点，本文就 `Flow` 中的泛型类型的使用展开讲解，文末结合 React 源码对部分应用场景做了详细分析。
 
@@ -46,7 +46,7 @@ function identity<T>(value: T): T {
 
 ## （二）泛型语法
 
-#### 泛型函数
+### 泛型函数
 
 创建泛型函数的语法是在“参数列表”前添加“类型参数列表” `<T>`
 
@@ -59,7 +59,7 @@ function<T>(param: t): T {
 }
 ```
 
-#### 泛型函数类型
+### 泛型函数类型
 
 ```js
 function method(func: <T>(param: T) => T) {
@@ -67,7 +67,7 @@ function method(func: <T>(param: T) => T) {
 }
 ```
 
-#### 泛型类
+### 泛型类
 
 创建泛型类的语法是在 `class` 主体前声明类型参数列表
 
@@ -91,7 +91,7 @@ class Item<T> {
 }
 ```
 
-#### 泛型类型别称
+### 泛型类型别称
 
 ```js
 type Item<T> = {
@@ -100,7 +100,7 @@ type Item<T> = {
 }
 ```
 
-#### 泛型接口
+### 泛型接口
 
 ```js
 interface Item<T> {
@@ -109,7 +109,7 @@ interface Item<T> {
 }
 ```
 
-#### 为调用提供类型参数
+### 为调用提供类型参数
 
 可以在调用中直接为其泛型提供实体类型参数：
 
@@ -141,7 +141,7 @@ const c = new GenericClass<_, number, _>()
 
 ## （三）泛型的行为表现
 
-#### 泛型的使用如同变量
+### 泛型的使用如同变量
 
 泛型就像变量或函数参数那样，除了不能将它们当做类型用之外，可以在作用域中任何适当的地方使用它们：
 
@@ -153,7 +153,7 @@ function constant<T>(value: T): () => T {
 }
 ```
 
-#### 按需创建多个泛型
+### 按需创建多个泛型
 
 ```js
 function identity<One, Two, Three>(one: One, two: Two, three: Three) {
@@ -161,7 +161,7 @@ function identity<One, Two, Three>(one: One, two: Two, three: Three) {
 }
 ```
 
-#### 泛型值的跟踪
+### 泛型值的跟踪
 
 当对一个值使用泛型类型后，`Flow` 会跟踪它并且确保它不被其他类型值所代替：
 
@@ -179,7 +179,7 @@ function identity<T>(value: T): T {
 }
 ```
 
-#### 为泛型添加类型
+### 为泛型添加类型
 
 类似于 `mixed`，泛型是“未知”类型。如果已经指定了具体的类型，那么不能再使用泛型：
 
@@ -234,7 +234,7 @@ let two: 2 = identity(2)
 let three: "three" = identity("three")
 ```
 
-#### 泛型的使用如同边界
+### 泛型的使用如同边界
 
 ```js
 // @flow
@@ -281,7 +281,7 @@ function identity<T: string>(val: T): T {
 identity('bar')
 ```
 
-#### 参数化的泛型
+### 参数化的泛型
 
 使用泛型有时就像函数传参一样可以传入类型，这种行为被称作参数化泛型（或参数多态）。例如，一个参数化的泛型类型别称，当使用它时需要提供一个类型参数：
 
@@ -338,7 +338,7 @@ class Item {
 (Item.prototype: HasProp) // Error!
 ```
 
-#### 为参数化泛型添加默认值
+### 为参数化泛型添加默认值
 
 可以像为函数定义参数那样为参数化泛型定义默认值：
 
@@ -350,7 +350,7 @@ let foo: Item<> = { prop: 1 }
 let bar: Item<2> = { prop: 2 }
 ```
 
-#### Variance Sigils
+### Variance Sigils
 
 ## （四）结合 React 源码的实例分析
 
@@ -373,6 +373,7 @@ export default function forwardRef<Props, ElementType: React$ElementType>(
 这里使用了 `Flow` 的 `Generic Types（泛型类型）`，函数 `forwardRef` 有两个类型参数 `Props` 和 `ElementType`（其类型是 `React$ElementType`），函数 `forwardRef` 的参数 `render` 是一个函数，该函数有两个参数 `props`（使用了类型参数 `Props`）和 `ref`（它是传入了 `ElementType` 这个类型参数的 `React$Ref` 泛型类型），`render` 这个函数的返回值是 `React$Node` 类型。
 
 这段代码应用了 `Flow` 泛型的多个语法特性：
+
 1. [Functions with generics](https://flow.org/en/docs/types/generics/#toc-functions-with-generics)
 2. [Create as many generics as you need](https://flow.org/en/docs/types/generics/#toc-create-as-many-generics-as-you-need)
 3. [Adding types to generics](https://flow.org/en/docs/types/generics/#toc-adding-types-to-generics)
