@@ -1,6 +1,6 @@
-# [AntV](https://antv.alipay.com/zh-cn/index.html)、[G2](https://antv.alipay.com/zh-cn/g2/3.x/index.html) 和 [Bizcharts](https://alibaba.github.io/BizCharts/index.html)
+# [AntV](https://antv.alipay.com/zh-cn/index.html)、[G2](https://antv.alipay.com/zh-cn/g2/3.x/index.html) 和 [Bizcharts](https://alibaba.github.io/BizCharts/index.html) 介绍
 
-> 2018.01.06 发布，最后更新于 2019.07.17
+> 2018.01.06 发布，最后更新于 2019.07.18
 
 ## （一）AntV、G2、BizCharts 是什么
 

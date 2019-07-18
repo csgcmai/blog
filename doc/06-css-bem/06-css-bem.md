@@ -1,20 +1,20 @@
-CSS BEM 规范
-===
-> 2018.02.18 发布，最后更新于 2018.02.25
+# CSS BEM 规范介绍
 
-## 概要
+> 2018.02.18 发布，最后更新于 2019.07.18
+
+## （一）概要
 
 > BEM (Block, Element, Modifier) is a component-based approach to web development. The idea behind it is to divide the user interface into independent blocks. This makes interface development easy and fast even with a complex UI, and it allows reuse of existing code without copying and pasting.
 
 BEM（块、元素、修饰符）基于Web开发中的组件化实现方式。背后思想是将用户界面拆分成独立的块。这使得即便在复杂UI场景下，界面开发也十分的简单和迅速，并且这套方案允许我们在不使用复制粘贴的情况下重用现有代码。
 
-## Block（块）
+## （二）Block（块）
 
 > A functionally independent page component that can be reused. In HTML, blocks are represented by the class attribute.
 
 功能独立的页面元素（或简单或复杂）被视作一个块，它的 CSS 类名具有唯一性
 
-#### 特点：
+### 块的特点
 
 * 块的命名用来描述这个块的用途（“它是什么？” —— `menu` or `button`），而不是它的状态（“它是什么样？” —— `red` or `big`）
 * 块不应影响它自身所处的环境，意味着不应为块设置外置的几何（margin）或者位置属性
@@ -34,9 +34,9 @@ Example：
 <div class="red-text"></div>
 ```
 
-#### 块的使用指南
+### 块的使用指南
 
-###### 嵌套
+#### 块的嵌套规则
 
 * 块之前可以相互嵌套
 * 可以使用任意多的嵌套层级
@@ -50,11 +50,11 @@ Example：
 </header>
 ```
 
-## Element（元素）
+## （三）Element（元素）
 
 块的组成部分，无法脱离块去使用。
 
-#### 特点
+### 元素的特点
 
 * 元素的命名用来描述这个元素的用途（“它是什么？” —— `item`, `text`, 等等），而不是它的状态（“什么类型，或它是什么样？” —— `red`, `big`, 等等）
 * 元素的整个命名结构是 `block-name__element-name`，元素名和块名通过双下划线 __ 分隔。
@@ -68,9 +68,9 @@ Example：
 </form>
 ```
 
-#### 元素的使用指南
+### 元素的使用指南
 
-###### 嵌套规则
+#### 元素的嵌套规则
 
 * 元素之间可以相互嵌套
 * 可以使用任意多的嵌套层级
@@ -140,7 +140,7 @@ Example：
 
 块的结构虽然变了，但元素的 CSS 规则和命名并未改变。
 
-###### 成员性（Membership）
+#### 元素的成员性（Membership）
 
 元素永远都是块的一部分，而不应脱离块去单独使用它们。
 
@@ -159,7 +159,7 @@ Example：
 <button class="search-form__button">Search</button>
 ```
 
-###### 可选择性（Optionality）
+#### 元素的可选择性（Optionality）
 
 元素相对于块组件是可选的。并非所有的块一定要具备元素。
 
@@ -172,35 +172,35 @@ Example：
 </div>
 ```
 
-## 使用块还是元素？
+## （四）使用块还是元素
 
-#### 使用块
+### 使用块
 
 如果这部分代码可能会被重用，或者不受其他页面元素的影响，那么应该使用块。
 
-#### 使用元素
+### 使用元素
 
 如果这部分代码无法脱离于它的父结构而单独存在，那么应该使用元素。
 
 有个例外情况，为了简化开发，当需要将块的元素们分离成更小的部分（子元素）时，按照 BEM 的思想，不能为元素创建元素，在这种情况下，取而代之的是创建一个块而不是元素。
 
-## Modifier（修饰符）
+## （五）Modifier（修饰符）
 
 用来定义块或元素的外观、状态或者行为。
 
-#### 特点
+### 修饰符的特点
 
 * 修饰符的命名用来描述外观（“多大尺寸？” 或 “那套主题？” 等等 —— `size_s` 或者 `theme_islands`）；状态（“和其他块、元素有何不同？” —— `disabled`, `focused` 等）；还有行为（“它表现成如何？”或“它如何响应用户？” —— 例如 `directions_left-top`）
 * 用单下划线 _ 来分割修饰符与块或元素的命名
 
-#### 修饰符类型
+### 修饰符类型
 
-###### Boolean
+#### Boolean
 
 * 当修饰符的存在与否起主要影响时使用 Boolean 类型。例如，`disabled`。当一个 Boolean 类型的修饰符存在时，假定它的值为 true。
 * 命名遵循以下形式：
-    * block-name_modifier-name
-    * block-name__element-name_modifier-name
+  * block-name_modifier-name
+  * block-name__element-name_modifier-name
 
 Example:
 
@@ -213,12 +213,12 @@ Example:
 </form>
 ```
 
-###### Key-value
+#### Key-value
 
 * 当修饰符的具体值起主要影响作用时使用 Key-value 类型。例如，一个使用 `islands` 设计主题的菜单：`menu_theme_islands`
 * 命名遵循以下形式：
-    * block-name_modifier-name_modifier-value
-    * block-name__element-name_modifier-name_modifier-value
+  * block-name_modifier-name_modifier-value
+  * block-name__element-name_modifier-name_modifier-value
 
 Example:
 
@@ -242,9 +242,9 @@ Example:
 </form>
 ```
 
-#### 修饰符的使用指南
+### 修饰符的使用指南
 
-###### 修饰符不能被单独使用
+#### 修饰符不能被单独使用
 
 Example:
 
@@ -261,7 +261,7 @@ Example:
 </form>
 ```
 
-## Mix（混合）
+## （六）Mix（混合）
 
 在一个 DOM 节点上使用不同 BEM Class 的技巧
 
@@ -285,7 +285,7 @@ Example:
 在本例中，结合了 `search-form` 块和 `header` 块中的 `search-form` 元素的表现和样式。我们可以在 `header__search-form` 元素上设置外部几何、位置
 相关属性，而 `search-form` 块保持通用样式。这样我们可以在其他任何环境中使用 `search-form` 块，它没有指定任何补充样式，这也是为什么可以单独去使用它。
 
-## 相关资源
+## （七）参考资源
 
 * [BEM](https://en.bem.info/)
 * [Tencent tmt-wrokflow CSS BEM 书写规范](https://github.com/Tencent/tmt-workflow/wiki/%E2%92%9B-%5B%E8%A7%84%E8%8C%83%5D--CSS-BEM-%E4%B9%A6%E5%86%99%E8%A7%84%E8%8C%83)
