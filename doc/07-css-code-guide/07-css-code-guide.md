@@ -1,8 +1,8 @@
-CSS 编码 规范
-===
-> 2018.02.25 发布，最后更新于 2018.03.01
+# CSS 编码规范实践点记录（持续更新）
 
-## 注释
+> 2018.02.25 发布，最后更新于 2019.07.18
+
+## （一）注释
 
 注释统一用 `/* */`，缩进与下一行代码保持一致；可位于一个代码行的末尾，与代码间隔一个空格。
 
@@ -24,17 +24,17 @@ CSS 编码 规范
 }
 ```
 
-## 选择器命名
+## （二）选择器命名
 
 使用 BEM 命名，参考 [BEM 命名规范](https://github.com/AnHongpeng/blog/issues/6)
 
-## 选择器嵌套层级
+## （三）选择器嵌套层级
 
 DOM 渲染过程中，为了减少 CSS 声明规则与 DOM 节点匹配的回溯成本，CSS 引擎的解析顺序被设计为从右向左。过多的选择器嵌套会大大影响匹配效率（eg, `.demo .demo__ul span { ... }`），因此应最大程度上避免嵌套 CSS 选择器的使用。
 
 绝大多数场景下不需要进行选择器嵌套。如果使用嵌套，嵌套层级不超过3层。
 
-## 属性声明顺序
+## （四）属性声明顺序
 
 属性声明按顺序做分组处理：
 
@@ -76,7 +76,7 @@ DOM 渲染过程中，为了减少 CSS 声明规则与 DOM 节点匹配的回溯
 
 下面是推荐的属性的顺序：
 
-```
+```other
 [
     [
         "display",
@@ -256,7 +256,7 @@ DOM 渲染过程中，为了减少 CSS 声明规则与 DOM 节点匹配的回溯
 ]
 ```
 
-## 颜色
+## （五）颜色
 
 颜色16进制用小写字母；颜色16进制尽量用简写。
 
@@ -274,7 +274,7 @@ DOM 渲染过程中，为了减少 CSS 声明规则与 DOM 节点匹配的回溯
 }
 ```
 
-## 属性简写
+## （六）属性简写
 
 `margin` 和 `padding` 需要使用属性简写（当上下左右值均需要明确定义时，否则拆开单独定义）
 
@@ -302,14 +302,14 @@ DOM 渲染过程中，为了减少 CSS 声明规则与 DOM 节点匹配的回溯
 }
 ```
 
-## 注意项
+## （七）注意项
 
 * 去掉小数点前面的0
 * 属性值'0'后面不要加单位
 * 用 `border: 0;` 代替 `border: none;`
 * 使用 AntD 的项目，由于 AntD 依赖 Normalize 7，元素默认使用 `box-sizing: border-box;` 布局（即怪异盒模型）
 
-## React 技术栈中的应用
+## （八）在 React 技术栈中的应用
 
 使用 [CSS Modules](https://github.com/camsong/blog/issues/5) 技术。
 
@@ -317,7 +317,7 @@ DOM 渲染过程中，为了减少 CSS 声明规则与 DOM 节点匹配的回溯
 
 在未来的 create-react-app 2.x 版本中将会更好地支持 CSS 模块化，[Add support for CSS Modules with explicit filename - [name].module.css](https://github.com/facebook/create-react-app/pull/2285)，现处于持续关注中
 
-## 参考资源
+## （九）参考资源
 
 * [网易 NEC 规范](http://nec.netease.com/standard/css-sort.html)
 * [腾讯 AlloyTeam CSS 规范](http://alloyteam.github.io/CodeGuide/#css)
