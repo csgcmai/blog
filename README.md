@@ -2,7 +2,7 @@
 
 > 鸿鹏的专题博客
 >
-> 目录最后更新于 2019.07.18
+> 目录最后更新于 2019.07.19
 
 ## Issues 发表的文章
 
@@ -28,7 +28,9 @@
 
 * [ES6 Generator](https://github.com/AnHongpeng/blog/tree/master/typicalCase/es6-generator)
 * [ES6 Iterator 与 for...of](https://github.com/AnHongpeng/blog/tree/master/typicalCase/es6-iterator-and-for-of)
-* [函数式编程](https://github.com/AnHongpeng/blog/blob/master/typicalCase/fp/01-fp.js)
-* 面向对象 OOP
+* [函数式（FP）编程](https://github.com/AnHongpeng/blog/blob/master/typicalCase/fp/01-fp.js)
+* 设计模式
+  * [通用对象池模式](https://github.com/AnHongpeng/blog/blob/master/typicalCase/design-patterns/object-pool-factory.js)
+* 面向对象（OOP）编程
   * [创建对象模式（组合使用构造函数模式和原型模式、动态原型模式、寄生构造函数模式、稳妥构造函数模式等）](https://github.com/AnHongpeng/blog/blob/master/typicalCase/oop/01-createObject.js)
   * [对象继承模式（原型式继承、寄生式继承、寄生组合式继承等）](https://github.com/AnHongpeng/blog/blob/master/typicalCase/oop/02-inherit.js)
