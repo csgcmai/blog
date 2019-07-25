@@ -410,6 +410,10 @@ function mapSingleChildIntoContext(bookKeeping, child, childKey) {
 
 ![chart-event](../../docAssets/13/React.Children.map.jpg)
 
-## 小结
+## （四）小结
 
 React 中在实现节点遍历时使用了对象池模式，主要是避免频繁创建遍历上下文对象（TraverseContext）所带来的内存开销。源码中 TraverseContext 对象的“创建->使用->回收”流程清晰明了，推荐大家在遇到频繁创建相似对象时使用对象池模式，来提升应用性能。
+
+参考：
+
+* 《JavaScript 设计模式与开发实践》
