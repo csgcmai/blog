@@ -102,3 +102,52 @@ JavaScript 通过 `Document` 类型表示文档。在浏览器中，`document` �
 * `document.forms`，包含文档中所有的 `<form>` 元素，与 `document.getElementsByTagName("form")` 得到的结果相同；
 * `document.images`，包含文档中所有的 `<img>` 元素，与 `document.getElementsByTagName("img")` 得到的结果相同；
 * `document.links`，包含文档中所有带 `href` 属性的 `<a>` 元素。
+
+### Element 类型
+
+除了 `Document` 类型之外，`Element` 类型就要算是 Web 编程中最常用的类型了。`Element` 类型用于表现 XML 或 HTML 元素，提供了对元素标签名、子节点及特性的访问。`Element` 节点具有以下特征：
+
+* `nodeType` 的值为 `1`；
+* `nodeName` 的值为元素的标签名，也可以使用 `tagName` 属性，两者返回值相同；
+* `nodeValue` 的值为 `null`；
+* `parentNode` 可能是 `Document` 或 `Element`；
+* 其子节点可能是 `Element`、`Text`、`Comment`、`ProcessingInstruction`、`CDATASection` 或 `EntityReference`。
+
+**HTML 元素**：
+
+所有 HTML 元素都由 `HTMLElement` 类型表示，`HTMLElement` 类型直接继承自 `Element` 并添加了一些属性。添加的这些属性分别对应于每个 `HTML` 元素中都存在的下列标准特性（可以取得或设置它们）：
+
+* `id`，元素在文档中的唯一标识符；
+* `title`，有关元素的附加说明信息，一般通过工具提示条显示出来；
+* `lang`，元素内容的语言代码，很少使用；
+* `dir`，语言的方向，值为 `"ltr"`（left-to-right，从左至右）或 `"rtl"`（right-to-left，从右至左），也很少使用；
+* `className`，与元素的 `class` 特性对应，即为元素指定的 CSS 类。没有将这个属性命名为 class，是因为 class 是 ECMAScript 的保留字；
+
+以上特性对应如下例子中的 HTML 元素：
+
+`<div id="myDiv" class="bd" title="Body text" lang="en" dir="ltr"></div>`
+
+**取得与设置特性（属性）**：
+
+每个元素都有一或多个特性，这些特性的用途是给出相应元素或其内容的附加信息。操作特性的 DOM 方法主要有三个：
+
+* `getAttribute()`：通过 `getAttribute()` 方法也可以取得自定义特性（即标准 HTML 语言中没有的特性）的值。根据 HTML5 规范，自定义特性应该加上 `data-` 前缀以便验证。
+* `setAttribute()`
+* `removeAttribute()`
+
+**`attributes` 属性**：
+
+`Element` 类型是使用 `attributes` 属性的唯一一个 DOM 节点类型。`attributes` 属性中包含一个 `NamedNodeMap`，与 `NodeList` 类似，也是一个“动态”的集合。元素的每一个特性都由一个 `Attr` 节点表示，每个节点都保存在 `NamedNodeMap` 对象中。`NamedNodeMap` 对象拥有下列方法：
+
+* `getNamedItem_(name)_`：返回 `nodeName` 属性等于 `name` 的节点；
+* `removeNamedItem_(name)_`：从列表中移除 `nodeName` 属性等于 `name` 的节点；
+* `setNamedItem_(node)_`：向列表中添加节点，以节点的 `nodeName` 属性为索引；
+* `item_(pos)_`：返回位于数字 `pos` 位置处的节点。
+
+**创建元素**：
+
+使用 `document.createElement()` 方法可以创建新元素。这个方法只接受一个参数，即要创建元素的标签名。
+
+1. 在使用 `createElement()` 方法创建新元素的同时，也为新元素设置了 `ownerDocument` 属性。此时，还可以操作元素的特性，为它添加更多子节点，以及执行其他操作；
+2. 在新元素上设置这些特性只是给它们赋予了相应的信息。由于新元素尚未被添加到文档树中，因此设置这些特性不会影响浏览器的显示。要把新元素添加到文档树，可以使用 `appendChild()`、`insertBefore()` 或 `replaceChild()` 方法；
+3. 一旦将元素添加到文档树中，浏览器就会立即呈现该元素。此后，对这个元素所作的任何修改都会实时反映在浏览器中。
