@@ -151,3 +151,51 @@ JavaScript 通过 `Document` 类型表示文档。在浏览器中，`document` �
 1. 在使用 `createElement()` 方法创建新元素的同时，也为新元素设置了 `ownerDocument` 属性。此时，还可以操作元素的特性，为它添加更多子节点，以及执行其他操作；
 2. 在新元素上设置这些特性只是给它们赋予了相应的信息。由于新元素尚未被添加到文档树中，因此设置这些特性不会影响浏览器的显示。要把新元素添加到文档树，可以使用 `appendChild()`、`insertBefore()` 或 `replaceChild()` 方法；
 3. 一旦将元素添加到文档树中，浏览器就会立即呈现该元素。此后，对这个元素所作的任何修改都会实时反映在浏览器中。
+
+### Text 类型
+
+文本节点由 `Text` 类型表示，包含的是可以照字面解释的纯文本内容。纯文本中可以包含转义后的 HTML 字符，但不能包含 HTML 代码。`Text` 节点具有以下特征：
+
+* `nodeType` 的值为 `3`；
+* `nodeName` 的值为 `"#text"`；
+* `nodeValue` 的值为节点所包含的文本；
+* `parentNode` 是一个 `Element`；
+* 不支持（没有）子节点。
+
+可以通过 `nodeValue` 属性或 `data` 属性访问 `Text` 节点中包含的文本，这两个属性中包含的值相同。对 `nodeValue` 的修改也会通过 `data` 反映出来，反之亦然。使用下列方法可以操作节点中的文本：
+
+* `appendData(text)`：将 `text` 添加到节点的末尾；
+* `deleteData(offset, count)`：从 `offset` 指定的位置开始删除 `count` 个字符；
+* `insertData(offset, text)`：在 `offset` 指定的位置插入 `text`；
+* `replaceData(offset, count, text)`：用 `text` 替换从 `offset` 指定的位置开始到 `offset + count` 为止处的文本；
+* `splitText(offset)`：从 `offset` 指定的位置将当前文本节点分成两个文本节点；
+* `substringData(offset, count)`：提取从 `offset` 指定的位置开始到 `offset + count` 为止处的字符串；
+
+除了这些方法之外，文本节点还有一个 `length` 属性，保存着节点中字符的数目。而且，`nodeValue.length` 和 `data.length` 中也保存着同样的值。
+
+创建文本节点：
+
+1. 可以使用 `document.createTextNode()` 创建新文本节点，这个方法接受一个参数——要插入节点中的文本。
+2. 在创建新文本节点的同时，也会为其设置 `ownerDocument` 属性。不过，除非把新节点添加到文档树中已经存在的节点中，否则我们不会在浏览器窗口中看到新节点。
+
+### Comment 类型
+
+注释在 DOM 中是通过 `Comment` 类型来表示的。`Comment` 节点具有下列特征：
+
+* `nodeType` 的值为 `8`；
+* `nodeName` 的值为 `"#comment"`；
+* `nodeValue` 的值是注释的内容；
+* `parentNode` 可能是 `Document` 或 `Element`；
+* 不支持（没有）子节点。
+
+`Comment` 类型与 `Text` 类型继承自相同的基类，因此它拥有除 `splitText()` 之外的所有字符串操作方法。与 `Text` 类型相似，也可以通过 `nodeValue` 或 `data` 属性来取得注释的内容。另外，使用 `document.createComment()` 并为其传递注释文本也可以创建注释节点。
+
+### CDATASection 类型
+
+`CDATASection` 类型只针对基于 XML 的文档，表示的是 CDATA 区域。与 `Comment` 类似，`CDATASection` 类型继承自 `Text` 类型，因此拥有除 `splitText()` 之外的所有字符串操作方法。`CDATASection` 节点具有下列特征：
+
+* `nodeType` 的值为 `4`；
+* `nodeName` 的值为 `"#cdata-section"`；
+* `nodeValue` 的值是 CDATA 区域中的内容；
+* `parentNode` 可能是 `Document` 或 `Element`；
+* 不支持（没有）子节点。
