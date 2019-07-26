@@ -1,4 +1,4 @@
-# DOM 重点知识汇总
+# DOM 重点知识汇总（笔记）
 
 > 2019.07.26 发布，最后更新于 2019.07.26
 >
@@ -199,3 +199,80 @@ JavaScript 通过 `Document` 类型表示文档。在浏览器中，`document` �
 * `nodeValue` 的值是 CDATA 区域中的内容；
 * `parentNode` 可能是 `Document` 或 `Element`；
 * 不支持（没有）子节点。
+
+### DocumentType 类型
+
+`DocumentType` 类型在 Web 浏览器中并不常用。`DocumentType` 包含着与文档的 `doctype` 有关的所有信息，它具有下列特征：
+
+* `nodeType` 的值为 `10`；
+* `nodeName` 的值为 `doctype` 的名称；
+* `nodeValue` 的值为 `null`；
+* `parentNode` 是 `Document`；
+* 不支持（没有）子节点。
+
+DOM1 级描述了 `DocumentType` 对象的3个属性：
+
+* `name`：文档类型的名称；
+* `entities`：由文档类型描述的实体的 `NamedNodeMap` 对象；
+* `notations`：由文档类型描述的符号的 `NamedNodeMap` 对象；
+
+通常，浏览器中的文档使用的都是 HTML 或 XHTML 文档类型，因而 `entities` 和 `notations` 都是空列表（列表中的项来自行内文档类型声明）。但不管怎样，只有 `name` 属性是有用的。这个属性中保存的是文档类型的名称，也就是出现在 `<!DOCTYPE` 之后的文本。以下面严格型 HTML 4.01 的文档类型声明为例：
+
+`<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">`
+
+`DocumentType` 的 `name` 属性中保存的就是 `"HTML"`：
+
+`alert(document.doctype.name); // "HTML"`
+
+### DocumentFragment 类型
+
+在所有节点类型中，只有 `DocumentFragment` 在文档中没有对应的标记。DOM 规定文档片段（document fragment）是一种“轻量级”的文档，可以包含和控制节点，但不会像完整的文档那样占用额外的资源。`DocumentFragment` 节点具有下列特征：
+
+* `nodeType` 的值为 `11`；
+* `nodeName` 的值为 `"#document-fragment"`；
+* `nodeValue` 的值为 `null`；
+* `parentNode` 的值为 `null`；
+* 子节点可以是 `Element`、`ProcessingInstruction`、`Comment`、`Text`、`CDATASection` 或 `EntityReference`。
+
+虽然不能把文档片段直接添加到文档中，但可以将它作为一个“仓库”来使用，即可以在里面保存将来可能会添加到文档中的节点。要创建文档片段，可以使用 `document.createDocumentFragment()` 方法。
+
+文档片段继承了 `Node` 的所有方法，通常用于执行那些针对文档的 DOM 操作。如果将文档中的节点添加到文档片段中，就会从文档树中移除该节点，也不会从浏览器中再看到该节点。添加到文档片段中的新节点同样也不属于文档树。可以通过 `appendChild()` 或 `insertBefore()` 将文档片段中内容添加到文档中。在将文档片段作为参数传递给这两个方法时，实际上只会将文档片段的所有子节点添加到相应位置上；文档片段本身永远不会成为文档树的一部分。
+
+**应用示例**：
+
+`<ul id="myList"></ul>`
+
+假设我们想为这个 `<ul>` 元素添加3个列表项。如果逐个地添加列表项，将会导致浏览器反复渲染（呈现）新信息。为避免这个问题，可以像下面这样使用一个文档片段来保存创建的列表项，然后再一次性将它们添加到文档中：
+
+```js
+var fragment = document.createDocumentFragment()
+var ul = document.getElementById('myList')
+var li = null
+
+for (var i = 0; i < 3; i++) {
+  li = document.createElement('li')
+  li.appendChild(document.createTextNode('Item' + (i + 1)))
+  fragment.appendChild(li)
+}
+
+ul.appendChild(fragment)
+```
+
+### Attr 类型
+
+元素的特性在 DOM 中以 `Attr` 类型来表示。在所有浏览器中（包括 IE8），都可以访问 `Attr` 类型的构造函数和原型。从技术角度讲，特性就是存在于元素的 `attributes` 属性中的节点。特性节点具有下列特征：
+
+* `nodeType` 的值为 `2`；
+* `nodeName` 的值是特性的名称；
+* `nodeValue` 的值是特性的值；
+* `parentNode` 的值为 `null`；
+* 在 HTML 中不支持（没有）子节点；
+* 在 XML 中子节点可以是 `Text` 或 `EntityReference`。
+
+尽管它们也是节点，但特性却不被认为是 DOM 文档树的一部分。开发人员最常使用的是 `getAttribute()`、`setAttribute()` 和`removeAttribute()` 方法，很少直接引用特性节点。
+
+`Attr` 对象有3个属性：
+
+* `name`：特性名称（与 `nodeName` 的值相同）；
+* `value`：特性的值（与 `nodeValue` 的值相同）；
+* `specified`：布尔值，用以区别特性是在代码中指定的，还是默认的；
