@@ -518,3 +518,170 @@ HTML5 规定可以为元素添加非标准的属性，但要添加前缀 `data-`
 `scrollIntoView()` 可以在所有 HTML 元素上调用，通过滚动浏览器窗口或某个容器元素，调用元素就可以出现在视口中。
 
 如果给这个方法传入 `true` 作为参数，或者不传入任何参数，那么窗口滚动之后会让调用元素的顶部与视口顶部尽可能平齐。如果传入 `false` 作为参数，调用元素会尽可能全部出现在视口中，（可能的话，调用元素的底部会与视口顶部平齐。）不过顶部不一定平齐。
+
+## 12 DOM2 和 DOM3
+
+DOM1 级主要定义的是 HTML 和 XML 文档的底层结构。DOM2 和 DOM3 级则在这个结构的基础上引入了更多的交互能力，也支持了更高级的 XML 特性。为此，DOM2 和 DOM3 级分为许多模块（模块之间具有某种关联），分别描述了 DOM 的某个非常具体的子集。这些模块如下：
+
+* DOM2 级核心（DOM Level 2 Core）：在1级核心基础上构建，为节点添加了更多方法和属性；
+* DOM2 级视图（DOM Level 2 Views）：为文档定义了基于样式信息的不同视图；
+* DOM2 级事件（DOM Level 2 Events）：说明了如何使用事件与 DOM 文档交互；
+* DOM2 级样式（DOM Level 2 Style）：定义了如何以编程方式来访问和改变 CSS 样式信息；
+* DOM2 级遍历和范围（DOM Level 2 Traversal and Range）：引入了遍历 DOM 文档和选择其特定部分的新接口；
+* DOM2 级 HTML（DOM Level 2 HTML）：在1级 HTML 基础上构建，添加了更多属性、方法和新接口；
+
+DOM2级和3级的目的在于扩展 DOM API，以满足操作 XML 的所有需求，同时提供更好的错误处理及特性检测能力。
+
+### DOM 变化
+
+#### 针对 XML 命名空间的变化
+
+有了 XML 命名空间，不同 XML 文档的元素就可以混合在一起，共同构成格式良好的文档，而不必担心发生命名冲突。从技术上说，HTML 不支持 XML 命名空间，但 XHTML 支持 XML 命名空间。
+
+命名空间要使用 `xmlns` 特性来指定。XHTML 的命名空间是 `http://www.w3.org/1999/xhtml`，在任何格式良好 XHTML 页面中，都应该将其包含在 `<html>` 元素中。要想明确地为 XML 命名空间创建前缀，可以使用 `xmlns` 后跟冒号，再后跟前缀。有时候为了避免不同语言间的冲突，也需要使用命名空间来限定特性：
+
+```xhtml
+<xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <xhtml:head>
+    <xhtml:title>Example XHTML page</xhtml:title>
+  </xhtml:head>
+  <xhtml:body xhtml:class="home">
+    Hello World!
+  </xhtml:body>
+</xhtml:html>
+```
+
+#### 其他方面的变化
+
+1.`DocumentType` 类型新增了3个属性：`publicId`、`systemId` 和 `internalSubset`。其中，前两个属性表示的是文档类型声明中的两个信息段，这两个信息段在 DOM1 级中是没有办法访问到的。
+
+例如：`<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> [<!ELEMENT name (#PCDATA)>]`
+
+* `publicId` 是 `"-//W3C//DTD HTML 4.01//EN"`
+* `systemId` 是 `"http://www.w3.org/TR/html4/strict.dtd"`
+* internalSubset` 是 `"<!ELEMENT name (#PCDATA)>"`
+
+这种内部子集（internal subset）在 HTML 中极少用到，在XML中可能会更常见一些。
+
+2.`Document` 类型的变化
+
+`Document` 类型的变化中唯一与命名空间无关的方法是 `importNode()`。这个方法的用途是从一个文档中取得一个节点，然后将其导入到另一个文档，使其成为这个文档结构的一部分
+
+3.`Node` 类型的变化
+
+`Node` 类型中唯一与命名空间无关的变化，就是添加了 `isSupported()` 方法。与 DOM1级为 `document.implementation` 引入的 `hasFeature()` 方法类似，`isSupported()` 方法用于确定当前节点具有什么能力。这个方法也接受相同的两个参数：特性名和特性版本号。如果浏览器实现了相应特性，而且能够基于给定节点执行该特性，`isSupported()` 就返回 `true`。
+
+4.框架的变化
+
+框架和内嵌框架分别用 `HTMLFrameElement` 和 `HTMLIFrameElement` 表示，它们在 DOM2 级中都有了一个新属性，名叫 `contentDocument`。这个属性包含一个指针，指向表示框架内容的文档对象。
+
+### 样式
+
+要确定浏览器是否支持 DOM2级 定义的 CSS 能力，可以使用下列代码：
+
+```js
+var supportsDOM2CSS = document.implementation.hasFeature("CSS", "2.0")
+var supportsDOM2CSS2 = document.implementation.hasFeature("CSS2", "2.0")
+```
+
+任何支持 style 特性的 HTML 元素在 JavaScript 中都有一个对应的 `style` 属性。这个 `style` 对象是 `CSSStyleDeclaration` 的实例，包含着通过 HTML 的 `style` 特性指定的所有样式信息，但不包含与外部样式表或嵌入样式表经层叠而来的样式。
+
+“DOM2级样式”规范还为 `style` 对象定义了一些属性和方法。这些属性和方法在提供元素的 `style` 特性值的同时，也可以修改样式。下面列出了这些属性和方法：
+
+* `cssText`：如前所述，通过它能够访问到 `style` 特性中的 CSS 代码；
+* `length`：应用给元素的 CSS 属性的数量；
+* `parentRule`：表示 CSS 信息的 CSSRule 对象；
+* `getPropertyCSSValue(propertyName)`：返回包含给定属性值的 CSSValue 对象；
+* `getPropertyPriority(propertyName)`：如果给定的属性使用了 `!important` 设置，则返回 `"important"`；否则，返回空字符串；
+* `getPropertyValue(propertyName)`：返回给定属性的字符串值；
+* `item(index)`：返回给定位置的 CSS 属性的名称；
+* `removeProperty(propertyName)`：从样式中删除给定属性；
+* `setProperty(propertyName, value, priority)`：将给定属性设置为相应的值，并加上优先权标志（`"important"` 或者一个空字符串）；
+
+虽然 `style` 对象能够提供支持 `style` 特性的任何元素的样式信息，但它不包含那些从其他样式表层叠而来并影响到当前元素的样式信息。“DOM2级样式”增强了 `document.defaultView`，提供了 `getComputedStyle()` 方法。这个方法接受两个参数：要取得计算样式的元素和一个伪元素字符串（例如 `":after"`）。如果不需要伪元素信息，第二个参数可以是 `null`。`getComputedStyle()` 方法返回一个 `CSSStyleDeclaration` 对象（与 `style` 属性的类型相同），其中包含当前元素的所有计算的样式。
+
+### 元素大小
+
+#### 偏移量
+
+偏移量（offset dimension），包括元素在屏幕上占用的所有可见的空间。元素的可见大小由其高度、宽度决定，包括所有内边距、滚动条和边框大小（注意，不包括外边距）。通过下列4个属性可以取得元素的偏移量：
+
+* `offsetHeight`：元素在垂直方向上占用的空间大小，以像素计。包括元素的高度、（可见的）水平滚动条的高度、上边框高度和下边框高度；
+* `offsetWidth`：元素在水平方向上占用的空间大小，以像素计。包括元素的宽度、（可见的）垂直滚动条的宽度、左边框宽度和右边框宽度；
+* `offsetLeft`：元素的左外边框至包含元素的左内边框之间的像素距离；
+* `offsetTop`：元素的上外边框至包含元素的上内边框之间的像素距离；
+
+其中，`offsetLeft` 和 `offsetTop` 属性与包含元素有关，包含元素的引用保存在 `offsetParent` 属性中。`offsetParent` 属性不一定与 `parentNode` 的值相等。例如，`<td>` 元素的 `offsetParent` 是作为其祖先元素的 `<table>` 元素，因为 `<table>` 是在 DOM 层次中距 `<td>` 最近的一个具有大小的元素。
+
+![chart-event](./assets/2-offset.png)
+
+要想知道某个元素在页面上的偏移量，将这个元素的 `offsetLeft` 和 `offsetTop` 与其 `offsetParent` 的相同属性相加，如此循环直至根元素，就可以得到一个基本准确的值：
+
+```js
+function getElementLeft(element) {
+  var actualLeft = element.offsetLeft
+  var current = element.offsetParent
+
+  while(current !== null) {
+    actualLeft += current.offsetLeft
+    current = current.offsetParent
+  }
+
+  return actualLeft
+}
+
+function getElemetnTop(element) {
+  var actualTop = element.offsetTop
+  var current = element.offsetParent
+
+  while(current !== null) {
+    actualTop += current.offsetTop
+    current = current.offsetParent
+  }
+
+  return actualTop
+}
+```
+
+所有这些偏移量属性都是只读的，而且每次访问它们都需要重新计算。因此，应该尽量避免重复访问这些属性；如果需要重复使用其中某些属性的值，可以将它们保存在局部变量中，以提高性能。
+
+#### 客户区大小
+
+元素的客户区大小（client dimension），指的是元素内容及其内边距所占据的空间大小。有关客户区大小的属性有两个：`clientWidth` 和 `clientHeight`。其中，`clientWidth` 属性是元素内容区宽度加上左右内边距宽度；`clientHeight` 属性是元素内容区高度加上上下内边距高度。
+
+![chart-event](./assets/3-client.png)
+
+从字面上看，客户区大小就是元素内部的空间大小，因此滚动条占用的空间不计算在内。
+
+最常用到这些属性的情况，就是确定浏览器视口大小的时候：
+
+```js
+function getViewport() {
+  if (document.compatMode === 'BackCompat') { // 在 IE7 之前的版本中
+    return {
+      width: document.body.clientWidth,
+      height: document.body.clientHeight
+    }
+  } else {
+    return {
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight
+    }
+  }
+}
+```
+
+#### 滚动大小
+
+滚动大小（scroll dimension），指的是包含滚动内容的元素的大小。有些元素（例如 `<html>` 元素），即使没有执行任何代码也能自动地添加滚动条；但另外一些元素，则需要通过 CSS 的 `overflow` 属性进行设置才能滚动。以下是4个与滚动大小相关的属性：
+
+* `scrollHeight`：在没有滚动条的情况下，元素内容的总高度；
+* `scrollWidth`：在没有滚动条的情况下，元素内容的总宽度；
+* `scrollLeft`：被隐藏在内容区域左侧的像素数。通过设置这个属性可以改变元素的滚动位置；
+* `scrollTop`：被隐藏在内容区域上方的像素数。通过设置这个属性可以改变元素的滚动位置；
+
+![chart-event](./assets/4-scroll.png)
+
+#### 确定元素大小
+
+IE、Firefox 3+、Safari 4+、Opera 9.5 及 Chrome 为每个元素都提供了一个 `getBoundingClientRect()` 方法。这个方法返回会一个矩形对象，包含4个属性：`left`、`top`、`right` 和 `bottom`。这些属性给出了元素在页面中相对于视口的位置。
