@@ -1,6 +1,6 @@
-# DOM 重点知识汇总（笔记）
+# DOM 重点知识汇总
 
-> 2019.07.26 发布，最后更新于 2019.07.26
+> 2019.07.29 发布，最后更新于 2019.07.29
 >
 > 《JavaScript高级程序设计（第3版）》第 10 ~ 13 章笔记：DOM、DOM 扩展、DOM2 和 DOM 3
 
@@ -276,3 +276,89 @@ ul.appendChild(fragment)
 * `name`：特性名称（与 `nodeName` 的值相同）；
 * `value`：特性的值（与 `nodeValue` 的值相同）；
 * `specified`：布尔值，用以区别特性是在代码中指定的，还是默认的；
+
+## 10.2 DOM 操作技术
+
+### 动态脚本
+
+通过调用 `loadScript` 这个函数来加载外部 javascript 文件：
+
+```js
+function loadScript(url) {
+  var script = document.createElement('script')
+  script.type = 'text/javascript'
+  script.src = url
+  document.body.appendChild(script)
+}
+```
+
+### 动态样式
+
+与动态脚本类似，所谓动态样式是指在页面刚加载时不存在的样式；动态样式是在页面加载完成后动态添加到页面中的。
+
+以下面这个典型的 `<link>` 元素为例：
+
+`<link rel="stylesheet" type="text/css" href="styles.css">`
+
+```js
+function loadStyles(url) {
+  var link = document.createElement('link')
+  link.rel = 'stylesheet'
+  link.type = 'text/javascript'
+  var head = document.getElementByTagName('head')[0]
+  head.appendChild(link)
+}
+```
+
+### 操作表格
+
+为方便构建表格，HTML DOM 为 `<table>`、`<tbody>` 和 `<tr>` 元素添加了一些属性和方法。
+
+为 `<table>` 元素添加的属性和方法：
+
+* `caption`：保存着对 `<caption>` 元素（如果有）的指针；
+* `tBodies`：是一个 `<tbody>` 元素的 `HTMLCollection`；
+* `tFoot`：保存着对 `<tfoot>` 元素（如果有）的指针；
+* `tHead`：保存着对 `<thead>` 元素（如果有）的指针；
+* `rows`：是一个表格中所有行的 `HTMLCollection`；
+* `createTHead()`：创建 `<thead>` 元素，将其放到表格中，返回引用；
+* `createTFoot()`：创建 `<tfoot>` 元素，将其放到表格中，返回引用；
+* `createCaption()`：创建 `<caption>` 元素，将其放到表格中，返回引用；
+* `deleteTHead()`：删除 `<thead>` 元素；
+* `deleteTFoot()`：删除 `<tfoot>` 元素；
+* `deleteCaption()`：删除 `<caption>` 元素；
+* `deleteRow(_pos_)`：删除指定位置的行；
+* `insertRow(_pos_)`：向 `rows` 集合中的指定位置插入一行；
+
+为 `<tbody>` 元素添加的属性和方法：
+
+* `rows`：保存着 `<tbody>` 元素中行的 `HTMLCollection`；
+* `deleteRow(pos)`：删除指定位置的行；
+* `insertRow(pos)`：向 `rows` 集合中的指定位置插入一行，返回对新插入行的引用；
+
+为 `<tr>` 元素添加的属性和方法：
+
+* `cells`：保存着 `<tr>` 元素中单元格的 `HTMLCollection`；
+* `deleteCell(pos)`：删除指定位置的单元格；
+* `insertCell(pos)`：向 `cells` 集合中的指定位置插入一个单元格，返回对新插入单元格的引用；
+
+### 使用 NodeList
+
+`NodeList`、`NamedNodeMap`、`HTMLCollection` 这三个集合都是动态的，每当文档结构发生变化时，它们都会得到更新。
+
+一般来说，应该尽量减少访问 `NodeList` 的次数。因为每次访问 `NodeList`，都会运行一次基于文档的查询。所以，可以考虑将从 `NodeList` 中取得的值缓存起来。
+
+下面例子中初始化了第二个变量 `len`。由于 `len` 中保存着对 `divs.length` 在循环开始时的一个快照，因此就可以避免无限循环问题：
+
+```js
+var divs = document.getElementByTagName('div'),
+    i,
+    len,
+    div
+for (i = 0, len = divs.length; i < len; i++) {
+  div = document.createElement('div')
+  document.body.appendChild(div)
+}
+```
+
+理解 DOM 的关键，就是理解 DOM 对性能的影响。DOM 操作往往是 JavaScript 程序中开销最大的部分，而因访问 `NodeList` 导致的问题最多。`NodeList` 对象都是“动态的”，这就意味着每次访问 `NodeList` 对象，都会运行一次查询。有鉴于此，最好的办法就是尽量减少 `DOM` 操作。
