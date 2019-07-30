@@ -6,7 +6,7 @@
 
 DOM（文档对象模型）是针对HTML和XML文档的一个API（应用程序编程接口）。DOM描绘了一个层次化的节点树，允许开发人员添加、移除和修改页面的某一部分。
 
-## 10.1 节点层次
+## （一）节点层次
 
 ### Node 类型
 
@@ -277,7 +277,7 @@ ul.appendChild(fragment)
 * `value`：特性的值（与 `nodeValue` 的值相同）；
 * `specified`：布尔值，用以区别特性是在代码中指定的，还是默认的；
 
-## 10.2 DOM 操作技术
+## （二） DOM 操作技术
 
 ### 动态脚本
 
@@ -363,9 +363,9 @@ for (i = 0, len = divs.length; i < len; i++) {
 
 理解 DOM 的关键，就是理解 DOM 对性能的影响。DOM 操作往往是 JavaScript 程序中开销最大的部分，而因访问 `NodeList` 导致的问题最多。`NodeList` 对象都是“动态的”，这就意味着每次访问 `NodeList` 对象，都会运行一次查询。有鉴于此，最好的办法就是尽量减少 `DOM` 操作。
 
-## 11 DOM 扩展
+## （三） DOM 扩展
 
-### 11.1 选择符 API
+### 选择符 API
 
 Selectors API（www.w3.org/TR/selectors-api/）是由 W3C 发起制定的一个标准，致力于让浏览器原生支持 CSS 查询。
 
@@ -379,7 +379,7 @@ Selectors API（www.w3.org/TR/selectors-api/）是由 W3C 发起制定的一个�
 
 `matchesSelector()`：Selectors API Level 2 规范为 `Element` 类型新增了一个方法 `matchesSelector()`。这个方法接收一个参数，即 CSS 选择符，如果调用元素与该选择符匹配，返回 `true`；否则，返回 `false`。（这里补充 [MDN 上的方法描述](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/matches)）
 
-### 11.2 元素遍历
+### 元素遍历
 
 对于元素间的空格，IE9 及之前版本不会返回文本节点，而其他所有浏览器都会返回文本节点。这样，就导致了在使用 `childNodes` 和 `firstChild` 等属性时的行为不一致。为了弥补这一差异，而同时又保持 DOM 规范不变，Element Traversal 规范（www.w3.org/TR/ElementTraversal/）新定义了一组属性。
 
@@ -391,7 +391,7 @@ Element Traversal API 为 DOM 元素添加了以下 5 个属性：
 * `previousElementSibling`：指向前一个同辈元素；`previousSibling` 的元素版；
 * `nextElementSibling`：指向后一个同辈元素；`nextSibling` 的元素版；
 
-### 11.3 HTML5
+### HTML5
 
 #### 与类相关的扩充
 
@@ -519,7 +519,7 @@ HTML5 规定可以为元素添加非标准的属性，但要添加前缀 `data-`
 
 如果给这个方法传入 `true` 作为参数，或者不传入任何参数，那么窗口滚动之后会让调用元素的顶部与视口顶部尽可能平齐。如果传入 `false` 作为参数，调用元素会尽可能全部出现在视口中，（可能的话，调用元素的底部会与视口顶部平齐。）不过顶部不一定平齐。
 
-## 12 DOM2 和 DOM3
+## （四） DOM2 和 DOM3
 
 DOM1 级主要定义的是 HTML 和 XML 文档的底层结构。DOM2 和 DOM3 级则在这个结构的基础上引入了更多的交互能力，也支持了更高级的 XML 特性。为此，DOM2 和 DOM3 级分为许多模块（模块之间具有某种关联），分别描述了 DOM 的某个非常具体的子集。这些模块如下：
 
@@ -685,3 +685,103 @@ function getViewport() {
 #### 确定元素大小
 
 IE、Firefox 3+、Safari 4+、Opera 9.5 及 Chrome 为每个元素都提供了一个 `getBoundingClientRect()` 方法。这个方法返回会一个矩形对象，包含4个属性：`left`、`top`、`right` 和 `bottom`。这些属性给出了元素在页面中相对于视口的位置。
+
+### 遍历
+
+“DOM2级遍历和范围”模块定义了两个用于辅助完成顺序遍历 DOM 结构的类型：`NodeIterator` 和 `TreeWalker`。这两个类型能够基于给定的起点对 DOM 结构执行深度优先（depth-first）的遍历操作。
+
+![chart-event](./assets/5-depth-first.png)
+
+1.`NodeIterator`
+
+`NodeIterator` 类型是两者中比较简单的一个，可以使用 `document.createNodeIterator()` 方法创建它的新实例。这个方法接受下列4个参数：
+
+* `root`：想要作为搜索起点的树中的节点；
+* `whatToShow`：表示要访问哪些节点的数字代码；
+* `filter`：是一个 `NodeFilter` 对象，或者一个表示应该接受还是拒绝某种特定节点的函数；
+* `entityReferenceExpansion`：布尔值，表示是否要扩展实体引用。这个参数在 HTML 页面中没有用，因为其中的实体引用不能扩展。
+
+2.`TreeWalker`
+
+`TreeWalker` 是 `NodeIterator` 的一个更高级的版本。除了包括 `nextNode()` 和 `previousNode()` 在内的相同的功能之外，这个类型还提供了下列用于在不同方向上遍历 DOM 结构的方法：
+
+* `parentNode()`：遍历到当前节点的父节点；
+* `firstChild()`：遍历到当前节点的第一个子节点；
+* `lastChild()`：遍历到当前节点的最后一个子节点；
+* `nextSibling()`：遍历到当前节点的下一个同辈节点；
+* `previousSibling()`：遍历到当前节点的上一个同辈节点。
+
+创建 `TreeWalker` 对象要使用 `document.createTreeWalker()` 方法，这个方法接受的4个参数与 `document.createNodeIterator()` 方法相同：作为遍历起点的根节点、要显示的节点类型、过滤器和一个表示是否扩展实体引用的布尔值。
+
+### 范围
+
+为了让开发人员更方便地控制页面，“DOM2级遍历和范围”模块定义了“范围”（range）接口。通过范围可以选择文档中的一个区域，而不必考虑节点的界限（选择在后台完成，对用户是不可见的）。
+
+可以使用 `createRange()` 来创建 DOM 范围：
+
+`var range = document.createRange()`
+
+与节点类似，新创建的范围也直接与创建它的文档关联在一起，不能用于其他文档。创建了范围之后，接下来就可以使用它在后台选择文档中的特定部分。而创建范围并设置了其位置之后，还可以针对范围的内容执行很多种操作，从而实现对底层 DOM 树的更精细的控制。
+
+每个范围由一个 `Range` 类型的实例表示，这个实例拥有很多属性和方法。下列属性提供了当前范围在文档中的位置信息：
+
+* `startContainer`：包含范围起点的节点（即选区中第一个节点的父节点）。
+* `startOffset`：范围在 `startContainer` 中起点的偏移量。如果 `startContainer` 是文本节点、注释节点或 `CDATA`节点，那么 `startOffset` 就是范围起点之前跳过的字符数量。否则，`startOffset` 就是范围中第一个子节点的索引；
+* `endContainer`：包含范围终点的节点（即选区中最后一个节点的父节点）；
+* `endOffset`：范围在 `endContainer` 中终点的偏移量（与 `startOffset` 遵循相同的取值规则）；
+* `commonAncestorContainer`：`startContainer` 和 `endContainer` 共同的祖先节点在文档树中位置最深的那个；
+
+#### 用 DOM 范围实现简单选择
+
+要使用范围来选择文档中的一部分，最简的方式就是使用 `selectNode()` 或 `selectNodeContents()`。这两个方法都接受一个参数，即一个 DOM 节点，然后使用该节点中的信息来填充范围。其中，`selectNode()` 方法选择整个节点，包括其子节点；而 `selectNodeContents()` 方法则只选择节点的子节点。
+
+为了更精细地控制将哪些节点包含在范围中，还可以使用下列方法：
+
+* `setStartBefore(refNode)`：将范围的起点设置在 `refNode` 之前，因此 `refNode` 也就是范围选区中的第一个子节点。同时会将 `startContainer` 属性设置为 `refNode.parentNode`，将 `startOffset` 属性设置为 `refNode` 在其父节点的 `childNodes` 集合中的索引；
+* `setStartAfter(refNode)`：将范围的起点设置在 `refNode` 之后，因此 `refNode` 也就不在范围之内了，其下一个同辈节点才是范围选区中的第一个子节点。同时会将 `startContainer` 属性设置为 `refNode.parentNode`，将 `startOffset` 属性设置为 `refNode` 在其父节点的 `childNodes` 集合中的索引加1；
+* `setEndBefore(refNode)`：将范围的终点设置在 `refNode` 之前，因此 `refNode` 也就不在范围之内了，其上一个同辈节点才是范围选区中的最后一个子节点。同时会将 `endContainer` 属性设置为 `refNode.parentNode`，将 `endOffset` 属性设置为 `refNode` 在其父节点的 `childNodes` 集合中的索引；
+* `setEndAfter(refNode)`：将范围的终点设置在 `refNode` 之后，因此 `refNode` 也就是范围选区中的最后一个子节点。同时会将 `endContainer` 属性设置为 `refNode.parentNode`，将 `endOffset` 属性设置为 `refNode` 在其父节点的 `childNodes` 集合中的索引加1；
+
+#### 用 DOM 范围实现复杂选择
+
+要创建复杂的范围就得使用 `setStart()` 和 `setEnd()` 方法。这两个方法都接受两个参数：一个参照节点和一个偏移量值。对 `setStart()` 来说，参照节点会变成 `startContainer`，而偏移量值会变成 `startOffset`。对于 `setEnd()` 来说，参照节点会变成 `endContainer`，而偏移量值会变成 `endOffset`。
+
+#### 操作 DOM 范围中的内容
+
+* `deleteContents()`：从文档中删除范围所包含的内容；
+* `extractContents()`：从文档中删除范围所包含的内容，区别是该方法会返回范围的文档片段。利用这个返回的值，可以将范围的内容插入到文档中的其他地方；
+* `cloneContents()`：创建范围对象的一个副本；
+
+#### 插入 DOM 范围中的内容
+
+* `insertNode()`：使用 `insertNode()` 方法可以向范围选区的开始处插入一个节点；
+* `surroundContents()`：环绕范围插入内容，这个方法接受一个参数，即环绕范围内容的节点；
+
+#### 折叠 DOM 范围
+
+使用 `collapse()` 方法来折叠范围，这个方法接受一个参数，一个布尔值，表示要折叠到范围的哪一端。参数 `true` 表示折叠到范围的起点，参数 `false` 表示折叠到范围的终点。要确定范围已经折叠完毕，可以检查 `collapsed` 属性。
+
+#### 比较 DOM 范围
+
+在有多个范围的情况下，可以使用 `compareBoundaryPoints()` 方法来确定这些范围是否有公共的边界（起点或终点）。这个方法接受两个参数：表示比较方式的常量值和要比较的范围。
+
+表示比较方式的常量值如下所示：
+
+* `Range.START_TO_START(0)`：比较第一个范围和第二个范围的起点；
+* `Range.START_TO_END(1)`：比较第一个范围的起点和第二个范围的终点；
+* `Range.END_TO_END(2)`：比较第一个范围和第二个范围的终点；
+* `Range.END_TO_START(3)`：比较第一个范围的终点和第一个范围的起点；
+
+`compareBoundaryPoints()` 方法可能的返回值如下：如果第一个范围中的点位于第二个范围中的点之前，返回 `-1`；如果两个点相等，返回 `0`；如果第一个范围中的点位于第二个范围中的点之后，返回 `1`。
+
+#### 复制 DOM 范围
+
+可以使用 `cloneRange()` 方法复制范围。这个方法会创建调用它的范围的一个副本。
+
+`var newRange = range.cloneRange()`
+
+新创建的范围与原来的范围包含相同的属性，而修改它的端点不会影响原来的范围。
+
+#### 清理 DOM 范围
+
+在使用完范围之后，最好是调用 `detach()` 方法，以便从创建范围的文档中分离出该范围。调用 `detach()` 之后，就可以放心地解除对范围的引用，从而让垃圾回收机制回收其内存了。
