@@ -1,6 +1,6 @@
 # DOM 重点知识汇总
 
-> 2019.07.29 发布，最后更新于 2019.07.29
+> 2019.07.31 发布，最后更新于 2019.07.31
 >
 > 《JavaScript高级程序设计（第3版）》第 10 ~ 13 章笔记：DOM、DOM 扩展、DOM2 和 DOM 3
 
@@ -559,7 +559,7 @@ DOM2级和3级的目的在于扩展 DOM API，以满足操作 XML 的所有需�
 
 * `publicId` 是 `"-//W3C//DTD HTML 4.01//EN"`
 * `systemId` 是 `"http://www.w3.org/TR/html4/strict.dtd"`
-* internalSubset` 是 `"<!ELEMENT name (#PCDATA)>"`
+* `internalSubset` 是 `"<!ELEMENT name (#PCDATA)>"`
 
 这种内部子集（internal subset）在 HTML 中极少用到，在XML中可能会更常见一些。
 
@@ -785,3 +785,226 @@ IE、Firefox 3+、Safari 4+、Opera 9.5 及 Chrome 为每个元素都提供了�
 #### 清理 DOM 范围
 
 在使用完范围之后，最好是调用 `detach()` 方法，以便从创建范围的文档中分离出该范围。调用 `detach()` 之后，就可以放心地解除对范围的引用，从而让垃圾回收机制回收其内存了。
+
+## （五）事件
+
+### 事件流
+
+事件流描述的是从页面中接收事件的顺序。“DOM2级事件”规定的事件流包括三个阶段：
+
+1. 事件捕获阶段：为截获事件提供了机会；
+2. 处于目标阶段；
+3. 事件冒泡阶段：可以在这个阶段对事件做出响应；
+
+### 事件处理程序
+
+“DOM2级事件”定义了两个方法，用于处理指定和删除事件处理程序的操作：`addEventListener()` 和 `removeEventListener()`。所有 DOM 节点中都包含这两个方法，并且它们都接受3个参数：要处理的事件名、作为事件处理程序的函数和一个布尔值。最后这个布尔值参数如果是 `true`，表示在捕获阶段调用事件处理程序；如果是 `false`，表示在冒泡阶段调用事件处理程序。
+
+通过 `addEventListener()` 添加的事件处理程序只能使用 `removeEventListener()` 来移除；移除时传入的参数与添加处理程序时使用的参数相同。这也意味着通过 `addEventListener()` 添加的匿名函数将无法移除。
+
+### 事件对象
+
+在触发 DOM 上的某个事件时，会产生一个事件对象 `event`，这个对象中包含着所有与事件有关的信息。包括导致事件的元素、事件的类型以及其他与特定事件相关的信息。
+
+兼容 DOM 的浏览器会将一个 `event` 对象传入到事件处理程序中。
+
+`event` 对象包含与创建它的特定事件有关的属性和方法。触发的事件类型不一样，可用的属性和方法也不一样。不过，所有事件都会有下表列出的成员：
+
+| 属性/方法 | 类型 | 读/写 | 说明 |
+| -------- | --- | ---- | ---- |
+| bubbles | Boolean | 只读 | 表明事件是否冒泡 |
+| cancelable | Boolean | 只读 | 表明是否可以取消事件的默认行为 |
+| currentTarget | Element | 只读 | 某事件处理程序当前正在处理事件的那个元素 |
+| defaultPrevented | Boolean | 只读 | 为 `true` 表示已经调用了 `preventDefault()` |
+| detail | Integer | 只读 | 与事件相关的细节信息 |
+| eventPhase | Integer | 只读 | 调用事件处理程序的阶段：1 表示捕获阶段，2 表示“处于目标”，3 表示冒泡阶段 |
+| preventDefault() | Function | 只读 | 取消事件的默认行为。如果 `cancelable` 是 `true`，则可以使用这个方法 |
+| stopImmediatePropagation() | Function | 只读 | 取消事件进一步捕获或冒泡，同时组织任何事件处理程序被调用 |
+| stopPropagation() | Function | 只读 | 取消事件进一步的捕获或冒泡。如果 `bubbles` 为 `true`，则可以使用这个方法 |
+| target | Element | 只读 | 事件的目标 |
+| trusted | Boolean | 只读 | 为 `true` 表示事件是浏览器生成的。为 `false` 表示事件是由开发人员通过 `JavaScript` 创建的 |
+| type | String | 只读 | 被触发的事件的类型 |
+| view | AbstractView | 只读 | 与事件关联的抽象视图。等同于发生事件的 `window` 对象 |
+
+在事件处理程序内部，对象 `this` 始终等于 `currentTarget` 的值，而 `target` 则只包含事件的实际目标。如果直接将事件处理程序指定给了目标元素，则 `this`、`currentTarget` 和 `target` 包含相同的值。
+
+### 事件类型
+
+“DOM3级事件”规定了以下几类事件：
+
+* UI（User Interface）事件，当用户与页面上的元素交互时触发；
+* 焦点事件，当元素获得或失去焦点时触发；
+* 鼠标事件，当用户通过鼠标在页面上执行操作时触发；
+* 滚轮事件，当使用鼠标滚轮（或类似设备）时触发；
+* 文本事件，当在文档中输入文本时触发；
+* 键盘事件，当用户通过键盘在页面上执行操作时触发；
+* 合成事件，当为 IME（Input Method Editor，输入法编辑器）输入字符时触发；
+* 变动（mutation）事件，当底层 DOM 结构发生变化时触发；
+* 变动名称事件，当元素或属性名变动时触发。此类事件已经废弃，没有任何浏览器实现他们。
+
+### 内存和性能
+
+在 JavaScript 中，添加到页面上的事件处理程序数量将直接关系到页面的整体运行性能。导致这一问题的原因是多方面的。首先，每个函数都是对象，都会占用内存；内存中的对象越多，性能就越差。其次，必须事先指定所有事件处理程序而导致的 DOM 访问次数，会延迟整个页面的交互就绪时间。
+
+事件委托：
+
+对“事件处理程序过多”问题的解决方案就是事件委托。事件委托利用了事件冒泡，只指定一个事件处理程序，就可以管理某一类型的所有事件。
+
+例如，`click` 事件会一直冒泡到 `document` 层次。也就是说，我们可以为整个页面指定一个 `onclick` 事件处理程序，而不必给每个可单击的元素分别添加事件处理程序。以下面的 HTML 代码为例：
+
+```html
+<ul id="myLinks">
+  <li id="goSomeWhere">Go somewhere</li>
+  <li id="doSomething">Do Something</li>
+  <li id="sayHi">Say hi</li>
+</ul>
+```
+
+若要为每个 `<li>` 添加点击的事件处理程序，使用事件委托，只需在 DOM 树中尽量最高的层次上添加一个事件处理程序：
+
+```js
+var list = document.getElementById('myLinks')
+
+EventUtil.addHandler(list, 'click', function(event) {
+  event = EventUtil.getEvent(event)
+  var target = EventUtil.getTarget(event)
+
+  switch(target.id) {
+    case 'doSomething':
+      document.title = "I changed the document's title"
+      break
+    case 'goSomeWhere':
+      location.href = 'http://www.wrox.com'
+      break
+    case 'sayHi':
+      alert('hi')
+      break
+  }
+})
+```
+
+与未使用事件委托的代码对比，会发现这段代码的事前消耗更低，因为只取得了一个 DOM 元素，只添加了一个事件处理程序。虽然对用户来说最终的结果相同，但这种技术需要占用的内存更少。所有用到按钮的事件（多数鼠标事件和键盘事件）都适合采用事件委托技术。
+
+如果可行的话，也可以考虑为 `document` 对象添加一个事件处理程序，用以处理页面上发生的某种特定类型的事件。这样做与采取传统的做法相比具有如下优点：
+
+* `document` 对象很快就可以访问，而且可以在页面生命周期的任何时点上为它添加事件处理程序（无需等待 `DOMContentLoaded` 或 `load` 事件）。换句话说，只要可单击的元素呈现在页面上，就可以立即具备适当的功能；
+* 在页面中设置事件处理程序所需的时间更少。只添加一个事件处理程序所需的 DOM 引用更少，所花的时间也更少；
+* 整个页面占用的内存空间更少，能够提升整体性能；
+
+最适合采用事件委托技术的事件包括 `click`、`mousedown`、`mouseup`、`keydown`、`keyup` 和 `keypress`。虽然 `mouseover` 和 `mouseout` 事件也冒泡，但要适当处理它们并不容易，而且经常需要计算元素的位置。（因为当鼠标从一个元素移到其子节点时，或者当鼠标移出该元素时，都会触发 `mouseout` 事件。）
+
+每当将事件处理程序指定给元素时，运行中的浏览器代码与支持页面交互的 JavaScript 代码之间就会建立一个连接。这种连接越多，页面执行起来就越慢。如前所述，可以采用事件委托技术，限制建立的连接数量。另外，在不需要的时候移除事件处理程序，也是解决这个问题的一种方案。内存中留有那些过时不用的“空事件处理程序”（dangling event handler），也是造成 Web 应用程序内存与性能问题的主要原因。
+
+在两种情况下，可能会造成上述问题。第一种情况就是从文档中移除带有事件处理程序的元素时。这可能是通过纯粹的 DOM 操作，例如使用 `removeChild()` 和 `replaceChild()` 方法，但更多地是发生在使用 `innerHTML` 替换页面中某一部分的时候。如果带有事件处理程序的元素被 `innerHTML` 删除了，那么原来添加到元素中的事件处理程序极有可能无法被当作垃圾回收。如果你知道某个元素即将被移除，那么最好手工移除事件处理程序：
+
+```html
+<div id="myDiv">
+  <input type="button" value="Click Me" id="myBtn">
+</div>
+<script type="text/javascript">
+  var btn = document.getElementById('myBtn')
+  btn.onClick = function() {
+    // 先执行某些操作
+    btn.onClick = null // 移除事件处理程序
+    document.getElementById('myDiv').innerHTML = 'Processing...'
+  }
+</script>
+```
+
+导致“空事件处理程序”的另一种情况，就是卸载页面的时候。一般来说，最好的做法是在页面卸载之前，先通过 `onunload` 事件处理程序移除所有事件处理程序。在此，事件委托技术再次表现出它的优势——需要跟踪的事件处理程序越少，移除它们就越容易。对这种类似撤销的操作，我们可以把它想象成：只要是通过 `onload` 事件处理程序添加的东西，最后都要通过 `onunload` 事件处理程序将它们移除。
+
+### 模拟事件
+
+事件，就是网页中某个特别值得关注的瞬间。事件经常由用户操作或通过其他浏览器功能来触发。但很少有人知道，也可以使用 JavaScript 在任意时刻来触发特定的事件，而此时的事件就如同浏览器创建的事件一样。也就是说，这些事件该冒泡还会冒泡，而且照样能够导致浏览器执行已经指定的处理它们的事件处理程序。在测试 Web 应用程序，模拟触发事件是一种极其有用的技术。
+
+可以在 `document` 对象上使用 `createEvent()` 方法创建 `event` 对象。这个方法接收一个参数，即表示要创建的事件类型的字符串。这个字符串可以是下列几字符串之一：
+
+* `UIEvent`：一般化的 UI 事件。鼠标事件和键盘事件都继承自 UI 事件；
+* `MouseEvent`：一般化的鼠标事件；
+* `MutationEvent`：一般化的 DOM 变动事件；
+* `KeyboardEvent`：键盘事件；
+* `CustomEvent`：自定义事件；
+
+在创建了 `event` 对象之后，还需要使用与事件有关的信息对其进行初始化。每种类型的 `event` 对象都有一个特殊的方法，为它传入适当的数据就可以初始化该 `event` 对象。不同类型的这个方法的名字也不相同，具体要取决于 `createEvent()` 中使用的参数。
+
+模拟事件的最后一步就是触发事件。这一步需要使用 `dispatchEvent()` 方法，所有支持事件的 DOM 节点都支持这个方法。调用 `dispatchEvent()` 方法时，需要传入一个参数，即表示要触发事件的 `event` 对象。触发事件之后，该事件就跻身“官方事件”之列了，因而能够照样冒泡并引发相应事件处理程序的执行。
+
+#### 模拟鼠标事件
+
+创建鼠标事件对象的方法是为 `createEvent()` 传入字符串 `"MouseEvent"`。返回的对象有一个名为 `initMouseEvent()` 方法，用于指定与该鼠标事件有关的信息。这个方法接收15个参数，分别与鼠标事件中每个典型的属性一一对应；这些参数的含义如下：
+
+1. `type`（字符串）：表示要触发的事件类型，例如 `"click"`；
+2. `bubbles`（布尔值）：表示事件是否应该冒泡。为精确地模拟鼠标事件，应该把这个参数设置为 `true`；
+3. `cancelable`（布尔值）：表示事件是否可以取消。为精确地模拟鼠标事件，应该把这个参数设置为 `true`；
+4. `view`（AbstractView）：与事件关联的视图。这个参数几乎总是要设置为 `document.defaultView`；
+5. `detail`（整数）：与事件有关的详细信息。这个值一般只有事件处理程序使用，但通常都设置为 `0`；
+6. `screenX`（整数）：事件相对于屏幕的 X 坐标；
+7. `screenY`（整数）：事件相对于屏幕的 Y 坐标；
+8. `clientX`（整数）：事件相对于视口的 X 坐标；
+9. `clientY`（整数）：事件想对于视口的 Y 坐标；
+10. `ctrlKey`（布尔值）：表示是否按下了 Ctrl 键。默认值为 `false`；
+11. `altKey`（布尔值）：表示是否按下了 Alt 键。默认值为 `false`；
+12. `shiftKey`（布尔值）：表示是否按下了 Shift 键。默认值为 `false`；
+13. `metaKey`（布尔值）：表示是否按下了 Meta 键。默认值为 `false`；
+14. `button`（整数）：表示按下了哪一个鼠标键。默认值为 `0`；
+15. `relatedTarget`（对象）：表示与事件相关的对象。这个参数只在模拟 `mouseover` 或 `mouseout` 时使用；
+
+显而易见，`initMouseEvent()` 方法的这些参数是与鼠标事件的 `event` 对象所包含的属性一一对应的。其中，前4个参数对正确地激发事件至关重要，因为浏览器要用到这些参数；而剩下的所有参数只有在事件处理程序中才会用到。当把 `event` 对象传给 `dispatchEvent()` 方法时，这个对象的 `target` 属性会自动设置。Eg：
+
+```js
+var btn = document.getElementById('myBtn')
+
+// 创建事件对象
+var event = document.createEvent('MouseEvent')
+
+// 初始化事件对象
+event.initMouseEvent('click', true, true, document.defaultView, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+
+// 触发事件
+btn.dispatchEvent(event)
+```
+
+#### 模拟键盘事件
+
+DOM3级规定，调用 `createEvent()` 并传入 `"KeyboardEvent"` 就可以创建一个键盘事件。返回的事件对象会包含一个 `initKeyEvent()` 方法，这个方法接收下列参数：
+
+1. `type`（字符串）：表示要触发的事件类型，如 `"keydown"`；
+2. `bubbles`（布尔值）：表示事件是否应该冒泡；
+3. `cancelable`（布尔值）：表示事件是否可以取消。为精确模拟鼠标事件，应该设置为 `true`；
+4. `view`（AbstractView）：与事件关联的视图。这个参数几乎总是要设置为 `document.defaultView`；
+5. `key`（布尔值）：表示按下的键的键码；
+6. `location`（整数）：表示按下了哪里的键。`0` 表示默认的主键盘，`1` 表示左，`2` 表示右，`3` 表示数字键盘，`4` 表示移动设备（即虚拟键盘），`5` 表示手柄；
+7. `modifiers`（字符串）：空格分隔的修改键列表，如 `"Shift"`；
+8. `repeat`（整数）：在一行中按了这个键多少次；
+
+由于 DOM3级 不提倡使用 `keypress` 事件，因此只能利用这种技术来模拟 `keydown` 和 `keyup` 事件。
+
+#### 自定义 DOM 事件
+
+DOM3级 还定义了“自定义事件”。自定义事件不是由 DOM 原生触发的，它的目的是让开发人员创建自己的事件。要创建新的自定义事件，可以调用 `createEvent("CustomEvent")`。返回的对象有一个名为 `initCustomEvent()` 的方法，接收如下4个参数：
+
+1. `type`（字符串）：触发的事件类型，例如 `"keydown"`；
+2. `bubbles`（布尔值）：表示事件是否应该冒泡；
+3. `cancelable`（布尔值）：表示事件是否可以取消；
+4. `detail`（对象）：任意值，保存在 `event` 对象的 `detail` 属性中；
+
+可以像分派其他事件一样在 DOM 中分派创建的自定义事件对象。例如：
+
+```js
+var div = document.getElementById('myDiv'),
+    event
+
+EventUtil.addHandler(div, 'myevent', function(event) {
+  alert('DIV: ' + event.detail)
+})
+
+EventUtil.addHandler(document, 'myevent', function(event) {
+  alert('Document: ' + event.detail)
+})
+
+if (document.implementation.hasFeature('CustomEvents', 3.0)) {
+  event = document.createEvent('CustomEvent')
+  event.initCustomEvent('myevent', true, false, 'Hello world!')
+  div.dispatchEvent(event)
+}
+```
