@@ -2,7 +2,7 @@
 
 > 鸿鹏的专题博客
 >
-> 目录最后更新于 2019.07.19
+> 目录最后更新于 2019.07.31
 
 ## Issues 发表的文章
 
@@ -20,6 +20,7 @@
 3. [CSS BEM 规范介绍](https://github.com/AnHongpeng/blog/issues/6)
 4. [CSS 编码规范实践点记录（持续更新）](https://github.com/AnHongpeng/blog/issues/7)
 5. [ES/JSX 编码规范及最佳实践点记录（持续更新）](https://github.com/AnHongpeng/blog/issues/10)
+6. [DOM 重点知识汇总](https://github.com/AnHongpeng/blog/issues/16)
 
 ### 技术管理
 
